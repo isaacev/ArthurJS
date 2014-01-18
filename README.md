@@ -7,14 +7,20 @@ Arthur is a language that compiles to standards compliant JavaScript using NodeJ
 
 The Arthur specification is currently quite sparse and I intend to add the following features in the next two weeks:
 
-- [x] If/Else
-- [x] Functions
-- [x] Arrays
-- [ ] Objects
-- [ ] For and While loops
-- [ ] Switch/Case/Default
-- [ ] Try/Catch/Finally
-- [ ] Classes (like CoffeeScript)
+| status        | description                    |
+|:--------------|:-------------------------------|
+| ✓             | Basic Math                     |
+| ✓             | Assignment                     |
+| ✓             | If/Else                        |
+| ✓             | Functions                      |
+| ✓             | Arrays                         |
+| 1 week        | Objects                        |
+| 1 week        | For and While loops            |
+| 1-2 weeks     | Switch/Case/Default            |
+| 1-2 weeks     | Try/Catch/Finally              |
+| 2 weeks       | Basic Classes and Inheiritance |
+| 3 weeks       | Improved CLI                   |
+| -             | 1.0 Release                    |
 
 ## Why?
 
