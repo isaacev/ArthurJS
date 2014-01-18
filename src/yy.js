@@ -158,6 +158,8 @@ exports.yy = {
 				out += 'if ((typeof ' + ifExp.write(scope) + ' !== \'undefined\' && ' + ifExp.write(scope) + ' !== null)) {\n';
 			} else if (flag === 'notExist') {
 				out += 'if (typeof ' + ifExp.write(scope) + ' === \'undefined\' && ' + ifExp.write(scope) + ' === null) {\n';
+			} else {
+				out += 'if (' + ifExp.write(scope) + ') {\n';
 			}
 
 			scope.indentTemp();
@@ -311,38 +313,20 @@ exports.yy = {
 		};
 	},
 
-	Comparison: function (first, comparator, second) {
+	Comparison: function (relation, a, b) {
 		this.type = 'comparison';
 		this.write = function (scope) {
 			var out = '';
-			out += first.write(scope) + ' ';
-			out += comparator.write(scope) + ' ';
-			out += second.write(scope);
-			return out;
-		};
-	},
-
-	Comparator: function (which) {
-		this.type = 'comparator';
-		this.write = function () {
-			switch (which) {
-			case 'equal':
-				return '===';
-			case 'greater':
-				return '>';
-			case 'less':
-				return '<';
-			case 'greaterEqual':
-				return '>=';
-			case 'lessEqual':
-				return '<=';
-			case 'notEqual':
-				return '!==';
-			case 'and':
-				return '&&';
-			case 'or':
-				return '||';
+			if (relation == '?') {
+				// test for existance
+				out += '(typeof ' + a.write(scope) + ' !== \'undefined\' && ' + a.write(scope) + ' !== null)'
+			} else {
+				out += a.write(scope) + ' ';
+				out += relation + ' ';
+				out += b.write(scope);
 			}
+
+			return out;
 		};
 	},
 
@@ -416,9 +400,12 @@ exports.yy = {
 			var out;
 			switch (relation) {
 			case '**':
+				scope.useVar(a);
+				scope.useVar(b);
 				out = 'Math.pow(' + a.write(scope) + ', ' + b.write(scope) + ')';
 				break;
 			case '++':
+				scope.useVar(a);
 				if (b === true) {
 					// increment comes AFTER value
 					out = a.write(scope) + '++';
@@ -427,6 +414,7 @@ exports.yy = {
 				}
 				break;
 			case '--':
+				scope.useVar(a);
 				if (b === true) {
 					// decrement comes AFTER value
 					out = a.write(scope) + '--';
@@ -435,6 +423,8 @@ exports.yy = {
 				}
 				break;
 			default:
+				scope.useVar(a);
+				scope.useVar(b);
 				out = a.write(scope) + ' ' + relation + ' ' + b.write(scope);
 			}
 

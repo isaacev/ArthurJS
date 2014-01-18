@@ -57,7 +57,7 @@ exports.grammar = {
 			['Assignable --', '$$ = new yy.Operation("--", $1, true);'],
 
 			['Value MATH Value', '$$ = new yy.Operation($2, $1, $3);'],
-			['Value LOGIC Value', '$$ = new yy.Logic($2, $1, $3);']
+			'Comparison'
 		],
 
 		Def: [
@@ -70,12 +70,22 @@ exports.grammar = {
 		],
 
 		If: [
-			['IfHead IND Chunks DED', '$$ = new yy.If($1.flag, $1.exp, $1, $3);']
+			['IfHead IND Chunks DED', '$$ = new yy.If($1.flag, $1.exp, $3);']
 		],
 
 		IfHead: [
 			['IF ( Value ) : TERMINATOR', '$$ = {flag: "true", exp: $3};'],
-			['IF ( Value ? ) : TERMINATOR', '$$ = {flag: "existance", exp: $3};'],
+			['IF ( Comparison ) : TERMINATOR', '$$ = {exp: $3};'],
+		],
+
+		Comparisons: [
+			['Comparison', '$$ = [$1];'],
+			['Comparisons LOGIC Comparison', '$1.push($2, $3);']
+		],
+
+		Comparison: [
+			['Expression ?', '$$ = new yy.Comparison($2, $1);'],
+			['Expression LOGIC Expression', '$$ = new yy.Comparison($2, $1, $3);']
 		],
 
 		Assignable: [

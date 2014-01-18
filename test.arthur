@@ -1,5 +1,5 @@
 truth = true
 lie = false
 
-if (truth):
+if (truth?):
 	num++
