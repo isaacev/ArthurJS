@@ -5,7 +5,7 @@ ArthurJS
 
 Arthur is a language that compiles to standards compliant JavaScript using NodeJS. It uses significant-whitespace instead of curly braces to denote code blocks leader to code that is (hopefully) easier to read and more concise.
 
-The Arthur specification is currently quite sparse and I intend to add the following features in the next two weeks:
+The Arthur specification is currently quite sparse and I intend to add the following features in the coming weeks:
 
 | status        | description                    |
 |:--------------|:-------------------------------|
