@@ -17,6 +17,7 @@ exports.yy = {
 			var out = '';
 
 			var scope = new Scope();
+
 			scope.indent();
 			if (opts.bare === true) {
 				scope.dedentTemp();
@@ -40,9 +41,14 @@ exports.yy = {
 
 			scope.dedent();
 
-			out += ((opts.bare === true) ? '' : tab(scope) + '}).call(this' + usesArgs + ');');
-			out = ((opts.bare === true) ? '' : '(function(' + usesTails + ') {\n') + variables + out;
+			// optionally wrap file in function wrapper and remove unnecessary newlines from end
+			if (opts.bate !== true) {
+				out = '(function(' + usesTails + ') {\n' + variables + out.replace(/\s+$/, '\n') + tab(scope) + '}).call(this' + usesArgs + ');';
+			} else {
+				out.replace(/\s+$/, '');
+			}
 
+			// add optional header
 			if (opts.header === true) {
 				out = '// Written by Arthur v0.1.0\n\n' + out;
 			}
@@ -147,48 +153,44 @@ exports.yy = {
 		};
 	},
 
-	If: function (ifObj, elseIfs, elseObj) {
+	If: function (flag, exp, chunks) {
+		var elseIfObjs = [];
+		var elseObj = false;
 		this.type = 'if';
 		this.write = function (scope) {
 			var out = '';
 
-			if (ifObj.flag === 'true') {
-				out += 'if (' + ifObj.exp.write(scope) + ' === true) {\n';
-			} else if (ifObj.flag === 'exist') {
-				out += 'if ((typeof ' + ifObj.exp.write(scope) + ' !== \'undefined\' && ' + ifObj.exp.write(scope) + ' !== null)) {\n';
-			} else if (ifObj.flag === 'notExist') {
-				out += 'if (typeof ' + ifObj.exp.write(scope) + ' === \'undefined\' && ' + ifObj.exp.write(scope) + ' === null) {\n';
+			if (flag === 'true') {
+				out += 'if (' + exp.write(scope) + ' === true) {\n';
+			} else if (flag === 'comparison') {
+				out += 'if (' + writeLogic(exp, scope) + ') {\n';
 			} else {
-				out += 'if (' + ifObj.exp.write(scope) + ') {\n';
+				out += 'if (' + exp.write(scope) + ') {\n';
 			}
 
 			scope.indentTemp();
-			out += writeBlock(scope, ifObj.chunks);
+			out += writeBlock(scope, chunks);
 			scope.dedentTemp();
 
 			out += tab(scope) + '}';
 
-			if (elseIfs) {
-				var currrent;
-				for (var i = 0, len = elseIfs.length; i < len; i++) {
-					current = elseIfs[i];
+			var current;
+			for (var i = 0, len = elseIfObjs.length; i < len; i++) {
+				current = elseIfObjs[i];
 
-					if (current.flag === 'true') {
-						out += ' else if (' + ifObj.exp.write(scope) + ' === true) {\n';
-					} else if (current.flag === 'exist') {
-						out += ' else if ((typeof ' + ifObj.exp.write(scope) + ' !== \'undefined\' && ' + ifObj.exp.write(scope) + ' !== null)) {\n';
-					} else if (current.flag === 'notExist') {
-						out += ' else if (typeof ' + ifObj.exp.write(scope) + ' === \'undefined\' && ' + ifObj.exp.write(scope) + ' === null) {\n';
-					} else {
-						out += ' else if (' + ifObj.exp.write(scope) + ') {\n';
-					}
-
-					scope.indentTemp();
-					out += writeBlock(scope, current.chunks);
-					scope.dedentTemp();
-
-					out += tab(scope) + '}';
+				if (current.flag === 'true') {
+					out += ' else if (' + current.exp.write(scope) + ' === true) {\n';
+				} else if (current.flag === 'comparison') {
+					out += ' else if (' + writeLogic(current.exp, scope) + ') {\n';
+				} else {
+					out += ' else if (' + current.exp.write(scope) + ') {\n';
 				}
+
+				scope.indentTemp();
+				out += writeBlock(scope, current.chunks);
+				scope.dedentTemp();
+
+				out += tab(scope) + '}';
 			}
 
 			if (elseObj) {
@@ -202,6 +204,20 @@ exports.yy = {
 			}
 
 			return out;
+		};
+
+		this.addElseIf = function (flag, exp, chunks) {
+			elseIfObjs.push({
+				flag: flag,
+				exp: exp,
+				chunks: chunks
+			});
+			return this;
+		};
+
+		this.addElse = function (chunks) {
+			elseObj = chunks;
+			return this;
 		};
 	},
 
@@ -328,12 +344,12 @@ exports.yy = {
 		};
 	},
 
-	While: function (comparator, block) {
+	While: function (comparisons, block) {
 		this.type = 'while';
 		this.write = function (scope) {
 			var out = '';
 
-			out += 'while (' + writeLogic(comparator, scope) + ') {\n';
+			out += 'while (' + writeLogic(comparisons, scope) + ') {\n';
 
 			scope.indentTemp();
 			out += writeBlock(scope, block);

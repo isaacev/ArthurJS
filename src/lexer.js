@@ -107,5 +107,5 @@ lexer.addRule(/$/, function () {
 	return 'EOF';
 });
 
-var RESERVED_AR = ['def', 'as'];
-var RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'in'];
+var RESERVED_AR = ['def', 'as', 'elseif'];
+var RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'while', 'in'];

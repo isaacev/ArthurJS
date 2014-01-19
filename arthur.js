@@ -25,6 +25,7 @@ function loadFile(path, callback) {
 
 loadFile('./test.arthur', function (data) {
 	console.log(Parser.parse(data + '\n').compile({
-		bare: true
+		header: true,
+		bare: false
 	}));
 });

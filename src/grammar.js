@@ -23,7 +23,8 @@ exports.grammar = {
 			'Operation',
 			'Def',
 			'If',
-			'For'
+			'For',
+			'While'
 		],
 
 		Statement: [
@@ -71,25 +72,15 @@ exports.grammar = {
 		],
 
 		If: [
-			['IfHead TERMINATOR', '$$ = new yy.If($1);'],
-			['IfHead TERMINATOR Else', '$$ = new yy.If($1, false, $3);'],
-			['IfHead TERMINATOR ElseIfs', '$$ = new yy.If($1, $3, false);'],
-			['IfHead TERMINATOR ElseIfs Else', '$$ = new yy.If($1, $3, $4);'],
+			'IfBlock',
+			['IfBlock Else', '$$ = $1.addElse($2);']
 		],
 
-		IfHead: [
-			['IF ( Value ) : TERMINATOR IND Chunks DED', '$$ = {flag: "true", exp: $3, chunks: $8};'],
-			['IF ( Comparison ) : TERMINATOR IND Chunks DED', '$$ = {exp: $3, chunks: $8};'],
-		],
-
-		ElseIfs: [
-			['ElseIf', '$$ = [$1];'],
-			['ElseIfs ElseIf', '$1.push($2);']
-		],
-
-		ElseIf: [
-			['ELSE IF ( Value ) : TERMINATOR IND Chunks DED', '$$ = {flag: "true", exp: $4, chunks: $9};'],
-			['ELSE IF ( Comparison ) : TERMINATOR IND Chunks DED', '$$ = {exp: $4, chunks: $9};']
+		IfBlock: [
+			['IF ( Value ) : TERMINATOR IND Chunks DED TERMINATOR', '$$ = new yy.If("true", $3, $8);'],
+			['IF ( Comparison ) : TERMINATOR IND Chunks DED TERMINATOR', '$$ = new yy.If("true", $3, $8);'],
+			['IfBlock ELSEIF ( Value ) : TERMINATOR IND Chunks DED TERMINATOR', '$$ = $1.addElseIf("true", $4, $9);'],
+			['IfBlock ELSEIF ( Comparison ) : TERMINATOR IND Chunks DED TERMINATOR', '$$ = $1.addElseIf("true", $4, $9);'],
 		],
 
 		Else: [
@@ -99,6 +90,10 @@ exports.grammar = {
 		For: [
 			['FOR ( Identifier IN Iterable ) : TERMINATOR IND Chunks DED', '$$ = new yy.For($3, $5, false, $10);'],
 			['FOR ( Identifier IN Iterable AS Identifier ) : TERMINATOR IND Chunks DED', '$$ = new yy.For($3, $5, $7, $12);']
+		],
+
+		While: [
+			['WHILE ( Comparisons ) : TERMINATOR IND Chunks DED', '$$ = new yy.While($3, $8);']
 		],
 
 		Iterable: [
@@ -116,8 +111,8 @@ exports.grammar = {
 		],
 
 		Comparison: [
-			['Expression ?', '$$ = new yy.Comparison($2, $1);'],
-			['Expression LOGIC Expression', '$$ = new yy.Comparison($2, $1, $3);']
+			['Value ?', '$$ = new yy.Comparison($2, $1);'],
+			['Value LOGIC Value', '$$ = new yy.Comparison($2, $1, $3);']
 		],
 
 		Assignable: [

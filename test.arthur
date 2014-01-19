@@ -1,4 +1,8 @@
-arr = [1, 1, 2, 3, 5, 8]
-
-for (i in {0..100} as j):
-	j++
+if (foo?):
+	i--
+elseif (bar?):
+	i++
+elseif (baz?):
+	i++
+else:
+	i--
