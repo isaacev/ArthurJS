@@ -14,12 +14,12 @@ The Arthur specification is currently quite sparse and I intend to add the follo
 | ✓             | If/Else                        |
 | ✓             | Functions                      |
 | ✓             | Arrays                         |
-| ✓ week        | Objects                        |
-| 1 week        | For and While loops            |
-| 1-2 weeks     | Switch/Case/Default            |
-| 1-2 weeks     | Try/Catch/Finally              |
+| ✓             | Objects                        |
+| ✓             | For and While loops            |
+| 1 weeks       | Switch/Case/Default            |
+| 1 weeks       | Try/Catch/Finally              |
 | 2 weeks       | Basic Classes and Inheiritance |
-| 3 weeks       | Improved CLI                   |
+| 2 weeks       | Improved CLI                   |
 | -             | 1.0 Release                    |
 
 ## Why?
@@ -38,6 +38,20 @@ helloWorld = def:
 	return 'Hello World!'
 
 console.log(helloWorld())
+```
+
+becomes:
+
+```javascript
+(function () {
+	var helloWorld;
+
+	helloWorld = function () {
+		return 'Hello World!';
+	};
+
+	console.log(helloWorld());
+}());
 ```
 
 ## License
