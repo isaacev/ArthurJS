@@ -1,3 +1,11 @@
-arr = ['foo', 'bar', 'baz']
+arr = [
+	'foo'
+	'bar'
+	'baz'
+]
 
-obj = {foo = 'bar', bar = 'baz', baz = 'qux'}
+obj = {
+	foo = 'bar'
+	bar = 'baz'
+	baz = 'qux'
+}

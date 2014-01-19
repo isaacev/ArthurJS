@@ -162,7 +162,7 @@ exports.grammar = {
 		Array: [
 			['[ ]', '$$ = new yy.Array([]);'],
 			['[ InlineElems ]', '$$ = new yy.Array($2);'],
-			['[ BlockElems ]', '$$ = new yy.Array($2);']
+			['[ TERMINATOR IND BlockElems DED TERMINATOR ]', '$$ = new yy.Array($4);']
 		],
 
 		InlineElems: [
@@ -170,15 +170,27 @@ exports.grammar = {
 			['InlineElems , Value', '$1.push($3);']
 		],
 
+		BlockElems: [
+			['Value', '$$ = [$1];'],
+			['BlockElems TERMINATOR Value', '$1.push($3);'],
+			'BlockElems TERMINATOR'
+		],
+
 		Object: [
 			['{ }', '$$ = new yy.Object([]);'],
 			['{ InlineProps }', '$$ = new yy.Object($2);'],
-			['{ BlockProps }', '$$ = new yy.Object($2);']
+			['{ TERMINATOR IND BlockProps DED TERMINATOR }', '$$ = new yy.Object($4);']
 		],
 
 		InlineProps: [
 			['Identifier = Value', '$$ = [{key: $1, val: $3}];'],
 			['InlineProps , Identifier = Value', '$1.push({key: $3, val: $5});']
+		],
+
+		BlockProps: [
+			['Identifier = Value', '$$ = [{key: $1, val: $3}];'],
+			['BlockProps TERMINATOR Identifier = Value', '$1.push({key: $3, val: $5});'],
+			'BlockProps TERMINATOR'
 		]
 	},
 
