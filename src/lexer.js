@@ -77,7 +77,7 @@ lexer.addRule(/\>\=|\<\=|\=\=|\>|\</, function (raw) {
 });
 
 // literal symbols
-lexer.addRule(/\+\+|\+|\-\-|\-|\/|\*\*|\*|\,|\(|\)|\[|\]|\=|\:|\?/, function (raw) {
+lexer.addRule(/\+\+|\+|\-\-|\-|\/|\*\*|\*|\,|\(|\)|\[|\]|\{|\}|\=|\:|\?/, function (raw) {
 	col += raw.length;
 	this.yytext = raw;
 

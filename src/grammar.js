@@ -141,6 +141,7 @@ exports.grammar = {
 		Literal: [
 			'AlphaNumeric',
 			'Array',
+			'Object',
 			'Boolean'
 		],
 
@@ -159,18 +160,25 @@ exports.grammar = {
 		],
 
 		Array: [
-			'InlineArray',
-			'BlockArray'
-		],
-
-		InlineArray: [
 			['[ ]', '$$ = new yy.Array([]);'],
-			['[ InlineElems ]', '$$ = new yy.Array($2);']
+			['[ InlineElems ]', '$$ = new yy.Array($2);'],
+			['[ BlockElems ]', '$$ = new yy.Array($2);']
 		],
 
 		InlineElems: [
 			['Value', '$$ = [$1];'],
 			['InlineElems , Value', '$1.push($3);']
+		],
+
+		Object: [
+			['{ }', '$$ = new yy.Object([]);'],
+			['{ InlineProps }', '$$ = new yy.Object($2);'],
+			['{ BlockProps }', '$$ = new yy.Object($2);']
+		],
+
+		InlineProps: [
+			['Identifier = Value', '$$ = [{key: $1, val: $3}];'],
+			['InlineProps , Identifier = Value', '$1.push({key: $3, val: $5});']
 		]
 	},
 

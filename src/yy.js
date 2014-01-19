@@ -526,7 +526,7 @@ exports.yy = {
 					} else {
 						beginning = ((i > 0) ? ', ' : '');
 					}
-					out += beginning + properties[i][0].write(scope) + ': ' + properties[i][1].write(scope);
+					out += beginning + properties[i].key.write(scope) + ': ' + properties[i].val.write(scope);
 				}
 			}
 			scope.dedentTemp();
