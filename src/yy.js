@@ -299,7 +299,7 @@ exports.yy = {
 		};
 	},
 
-	For: function (identifier, series, alias, block) {
+	For: function (identifier, iterable, alias, block) {
 		this.type = 'for';
 		this.write = function (scope) {
 			// declare looping variables, ex: var i;
@@ -311,11 +311,15 @@ exports.yy = {
 
 			var out = '';
 
-			out += buildIterator(series, identifier, scope);
+			out += buildIterator(iterable, identifier, scope, exports.yy);
 
 			scope.indentTemp();
 			if (alias !== false) {
-				out += tab(scope) + alias.write(scope) + ' = ' + series.write(scope) + '[' + identifier.write(scope) + '];\n';
+				if (iterable instanceof[].constructor) {
+					out += tab(scope) + alias.write(scope) + ' = ' + identifier.write(scope) + ';\n';
+				} else {
+					out += tab(scope) + alias.write(scope) + ' = ' + iterable.write(scope) + '[' + identifier.write(scope) + '];\n';
+				}
 			}
 			out += writeBlock(scope, block);
 			scope.dedentTemp();

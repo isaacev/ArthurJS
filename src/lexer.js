@@ -77,7 +77,7 @@ lexer.addRule(/\>\=|\<\=|\=\=|\>|\</, function (raw) {
 });
 
 // literal symbols
-lexer.addRule(/\+\+|\+|\-\-|\-|\/|\*\*|\*|\,|\(|\)|\[|\]|\{|\}|\=|\:|\?/, function (raw) {
+lexer.addRule(/\+\+|\+|\-\-|\.\.|\.|\-|\/|\*\*|\*|\,|\(|\)|\[|\]|\{|\}|\=|\:|\?/, function (raw) {
 	col += raw.length;
 	this.yytext = raw;
 
@@ -107,5 +107,5 @@ lexer.addRule(/$/, function () {
 	return 'EOF';
 });
 
-var RESERVED_AR = ['def'];
-var RESERVED_JS = ['true', 'false', 'if', 'else', 'return'];
+var RESERVED_AR = ['def', 'as'];
+var RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'in'];

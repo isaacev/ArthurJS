@@ -57,7 +57,7 @@ exports.writeLogic = function (comparisons, scope) {
 	return out;
 }
 
-exports.getNextIterator = function (scope) {
+exports.getNextIterator = function (scope, yy) {
 	var arr, i, test = 'i';
 
 	while (scope.exists('_' + test)) {
@@ -85,10 +85,10 @@ exports.getNextIterator = function (scope) {
 		test = arr.join('');
 	}
 
-	return new exports.scope.Id('_' + test);
+	return new yy.Id('_' + test);
 }
 
-exports.getNextLength = function (scope) {
+exports.getNextLength = function (scope, yy) {
 	var num = 1,
 		test = '_len';
 
@@ -97,10 +97,10 @@ exports.getNextLength = function (scope) {
 		test = '_len' + (num + 1);
 	}
 
-	return new exports.scope.Id(test);
+	return new yy.Id(test);
 }
 
-exports.buildIterator = function (series, index, scope) {
+exports.buildIterator = function (series, index, scope, yy) {
 	var out = '';
 
 	if (series instanceof[].constructor) {
@@ -117,7 +117,7 @@ exports.buildIterator = function (series, index, scope) {
 			var adjustment = (firstNum <= secondNum) ? '++' : '--';
 
 			var i = index.write(scope); // eg: i (user submitted)
-			var j = getNextIterator(scope); // eg: _j (program submitted)
+			var j = exports.getNextIterator(scope, yy); // eg: _j (program submitted)
 			scope.useVar(j);
 			j = j.write(scope);
 
@@ -132,7 +132,7 @@ exports.buildIterator = function (series, index, scope) {
 			second = second.write(scope);
 
 			var i = index.write(scope); // i
-			var j = getNextIterator(scope); // _j
+			var j = exports.getNextIterator(scope, yy); // _j
 			scope.useVar(j);
 			j = j.write(scope);
 
@@ -145,11 +145,11 @@ exports.buildIterator = function (series, index, scope) {
 		// series is a single variable
 		// for (_i = 0, _len = str.length; _i < _len; _i++)
 		var i = index.write(scope); // user submitted
-		var j = getNextIterator(scope); // program submitted
+		var j = exports.getNextIterator(scope, yy); // program submitted
 		scope.useVar(j);
 		j = j.write(scope);
 
-		var len = getNextLength(scope);
+		var len = exports.getNextLength(scope, yy);
 		scope.useVar(len);
 		len = len.write(scope);
 

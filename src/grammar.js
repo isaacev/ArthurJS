@@ -22,7 +22,8 @@ exports.grammar = {
 			'Call',
 			'Operation',
 			'Def',
-			'If'
+			'If',
+			'For'
 		],
 
 		Statement: [
@@ -93,6 +94,20 @@ exports.grammar = {
 
 		Else: [
 			['ELSE : TERMINATOR IND Chunks DED', '$$ = {chunks: $5};']
+		],
+
+		For: [
+			['FOR ( Identifier IN Iterable ) : TERMINATOR IND Chunks DED', '$$ = new yy.For($3, $5, false, $10);'],
+			['FOR ( Identifier IN Iterable AS Identifier ) : TERMINATOR IND Chunks DED', '$$ = new yy.For($3, $5, $7, $12);']
+		],
+
+		Iterable: [
+			'Value',
+			'Range'
+		],
+
+		Range: [
+			['{ Value .. Value }', '$$ = [$2, $4];']
 		],
 
 		Comparisons: [

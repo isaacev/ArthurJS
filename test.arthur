@@ -1,11 +1,4 @@
-arr = [
-	'foo'
-	'bar'
-	'baz'
-]
+arr = [1, 1, 2, 3, 5, 8]
 
-obj = {
-	foo = 'bar'
-	bar = 'baz'
-	baz = 'qux'
-}
+for (i in {0..100} as j):
+	j++
