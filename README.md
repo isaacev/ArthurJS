@@ -14,7 +14,7 @@ The Arthur specification is currently quite sparse and I intend to add the follo
 | ✓             | If/Else                        |
 | ✓             | Functions                      |
 | ✓             | Arrays                         |
-| 1 week        | Objects                        |
+| ✓ week        | Objects                        |
 | 1 week        | For and While loops            |
 | 1-2 weeks     | Switch/Case/Default            |
 | 1-2 weeks     | Try/Catch/Finally              |
