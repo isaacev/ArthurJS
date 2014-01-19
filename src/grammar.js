@@ -70,12 +70,29 @@ exports.grammar = {
 		],
 
 		If: [
-			['IfHead IND Chunks DED', '$$ = new yy.If($1.flag, $1.exp, $3);']
+			['IfHead TERMINATOR', '$$ = new yy.If($1);'],
+			['IfHead TERMINATOR Else', '$$ = new yy.If($1, false, $3);'],
+			['IfHead TERMINATOR ElseIfs', '$$ = new yy.If($1, $3, false);'],
+			['IfHead TERMINATOR ElseIfs Else', '$$ = new yy.If($1, $3, $4);'],
 		],
 
 		IfHead: [
-			['IF ( Value ) : TERMINATOR', '$$ = {flag: "true", exp: $3};'],
-			['IF ( Comparison ) : TERMINATOR', '$$ = {exp: $3};'],
+			['IF ( Value ) : TERMINATOR IND Chunks DED', '$$ = {flag: "true", exp: $3, chunks: $8};'],
+			['IF ( Comparison ) : TERMINATOR IND Chunks DED', '$$ = {exp: $3, chunks: $8};'],
+		],
+
+		ElseIfs: [
+			['ElseIf', '$$ = [$1];'],
+			['ElseIfs ElseIf', '$1.push($2);']
+		],
+
+		ElseIf: [
+			['ELSE IF ( Value ) : TERMINATOR IND Chunks DED', '$$ = {flag: "true", exp: $4, chunks: $9};'],
+			['ELSE IF ( Comparison ) : TERMINATOR IND Chunks DED', '$$ = {exp: $4, chunks: $9};']
+		],
+
+		Else: [
+			['ELSE : TERMINATOR IND Chunks DED', '$$ = {chunks: $5};']
 		],
 
 		Comparisons: [
@@ -161,6 +178,7 @@ exports.grammar = {
 		// from lowest precedence to highest
 		// does   foo = 4 ** 2 -> foo = Math.pow(4, 2)
 		// instead of          -> Math.pow(foo = 4, 2)
+		['right', 'IF', 'ELSE'],
 		['right', '=', ':', 'COMPOUND_ASSIGN', 'RETURN', 'THROW', 'EXTENDS'],
 		['nonassoc', 'INDENT', 'OUTDENT'],
 		['left', 'LOGIC'],

@@ -3,3 +3,8 @@ lie = false
 
 if (truth?):
 	num++
+else:
+	num = 0
+
+if (num > 1):
+	num = 0

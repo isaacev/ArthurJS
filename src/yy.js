@@ -147,26 +147,59 @@ exports.yy = {
 		};
 	},
 
-	If: function (flag, ifExp, ifBlock) {
+	If: function (ifObj, elseIfs, elseObj) {
 		this.type = 'if';
 		this.write = function (scope) {
 			var out = '';
 
-			if (flag === 'true') {
-				out += 'if (' + ifExp.write(scope) + ' === true) {\n';
-			} else if (flag === 'exist') {
-				out += 'if ((typeof ' + ifExp.write(scope) + ' !== \'undefined\' && ' + ifExp.write(scope) + ' !== null)) {\n';
-			} else if (flag === 'notExist') {
-				out += 'if (typeof ' + ifExp.write(scope) + ' === \'undefined\' && ' + ifExp.write(scope) + ' === null) {\n';
+			if (ifObj.flag === 'true') {
+				out += 'if (' + ifObj.exp.write(scope) + ' === true) {\n';
+			} else if (ifObj.flag === 'exist') {
+				out += 'if ((typeof ' + ifObj.exp.write(scope) + ' !== \'undefined\' && ' + ifObj.exp.write(scope) + ' !== null)) {\n';
+			} else if (ifObj.flag === 'notExist') {
+				out += 'if (typeof ' + ifObj.exp.write(scope) + ' === \'undefined\' && ' + ifObj.exp.write(scope) + ' === null) {\n';
 			} else {
-				out += 'if (' + ifExp.write(scope) + ') {\n';
+				out += 'if (' + ifObj.exp.write(scope) + ') {\n';
 			}
 
 			scope.indentTemp();
-			out += writeBlock(scope, ifBlock);
+			out += writeBlock(scope, ifObj.chunks);
 			scope.dedentTemp();
 
 			out += tab(scope) + '}';
+
+			if (elseIfs) {
+				var currrent;
+				for (var i = 0, len = elseIfs.length; i < len; i++) {
+					current = elseIfs[i];
+
+					if (current.flag === 'true') {
+						out += ' else if (' + ifObj.exp.write(scope) + ' === true) {\n';
+					} else if (current.flag === 'exist') {
+						out += ' else if ((typeof ' + ifObj.exp.write(scope) + ' !== \'undefined\' && ' + ifObj.exp.write(scope) + ' !== null)) {\n';
+					} else if (current.flag === 'notExist') {
+						out += ' else if (typeof ' + ifObj.exp.write(scope) + ' === \'undefined\' && ' + ifObj.exp.write(scope) + ' === null) {\n';
+					} else {
+						out += ' else if (' + ifObj.exp.write(scope) + ') {\n';
+					}
+
+					scope.indentTemp();
+					out += writeBlock(scope, current.chunks);
+					scope.dedentTemp();
+
+					out += tab(scope) + '}';
+				}
+			}
+
+			if (elseObj) {
+				out += ' else {\n';
+
+				scope.indentTemp();
+				out += writeBlock(scope, elseObj.chunks);
+				scope.dedentTemp();
+
+				out += tab(scope) + '}\n';
+			}
 
 			return out;
 		};
