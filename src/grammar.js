@@ -1,7 +1,7 @@
 exports.grammar = {
 	bnf: {
 		Root: [
-			['EOF', 'return new yy.Root([]);'],
+			['TERMINATOR EOF', 'return new yy.Root([]);'],
 			['Chunks EOF', 'return new yy.Root($1);']
 		],
 
@@ -19,7 +19,6 @@ exports.grammar = {
 		Expression: [
 			'Assignment',
 			'Value',
-			'Call',
 			'Operation',
 			'Def',
 			'If',
@@ -42,14 +41,20 @@ exports.grammar = {
 		],
 
 		Value: [
+			'Call',
 			'Assignable',
 			'Literal',
 			'Parenthetical'
 		],
 
 		Call: [
-			['Assignable ( )', '$$ = new yy.Call($1, []);'],
-			['Assignable ( ArgList )', '$$ = new yy.Call($1, $3);']
+			['Assignable Arguments', '$$ = new yy.Call($1, $2);'],
+			['Call Arguments', '$$ = new yy.Call($1, $2);']
+		],
+
+		Arguments: [
+			['( )', '$$ = [];'],
+			['( ArgList )', '$$ = $2;']
 		],
 
 		Operation: [
@@ -117,8 +122,7 @@ exports.grammar = {
 
 		Assignable: [
 			'Identifier',
-			['Value Accessor', '$$ = new yy.Accessor($1, $2);'],
-			['Call Accessor', '$$ = new yy.Accessor($1, $2);']
+			['Value Accessor', '$$ = new yy.Accessor($1, $2);']
 		],
 
 		ParamList: [
@@ -132,16 +136,13 @@ exports.grammar = {
 		],
 
 		ArgList: [
-			['Arg', '$$ = [$1];'],
-			['ArgList , Arg', '$1.push($3);']
-		],
-
-		Arg: [
-			'Value'
+			['Value', '$$ = [$1];'],
+			['ArgList , Value', '$1.push($3);']
 		],
 
 		Accessor: [
-			['[ Value ]', '$$ = $2;']
+			['. Identifier', '$$ = {type: "prop", val: $2};'],
+			['[ Value ]', '$$ = {type: "index", val: $2};']
 		],
 
 		Identifier: [

@@ -42,10 +42,10 @@ exports.yy = {
 			scope.dedent();
 
 			// optionally wrap file in function wrapper and remove unnecessary newlines from end
-			if (opts.bate !== true) {
+			if (opts.bare !== true) {
 				out = '(function(' + usesTails + ') {\n' + variables + out.replace(/\s+$/, '\n') + tab(scope) + '}).call(this' + usesArgs + ');';
 			} else {
-				out.replace(/\s+$/, '');
+				out = out.replace(/\s+$/, '');
 			}
 
 			// add optional header
@@ -428,7 +428,15 @@ exports.yy = {
 	Accessor: function (value, access) {
 		this.type = 'accessor';
 		this.write = function (scope) {
-			return value.write(scope) + '[' + access.write(scope) + ']';
+			var out = '';
+
+			if (access.type === 'index') {
+				out = value.write(scope) + '[' + access.val.write(scope) + ']';
+			} else if (access.type === 'prop') {
+				out = value.write(scope) + '.' + access.val.write(scope);
+			}
+
+			return out;
 		};
 	},
 
