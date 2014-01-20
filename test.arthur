@@ -1,8 +1,0 @@
-if (foo?):
-	i--
-elseif (bar?):
-	i++
-elseif (baz?):
-	i++
-else:
-	i--
