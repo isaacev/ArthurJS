@@ -37,7 +37,8 @@ exports.grammar = {
 		],
 
 		Assignment: [
-			['Assignable = Expression', '$$ = new yy.Assignment($1, $3);']
+			['Assignable = Expression', '$$ = new yy.Assignment(false, $1, $3);'],
+			['. Identifier = Expression', '$$ = new yy.Assignment(true, $2, $4);'],
 		],
 
 		Value: [
@@ -78,19 +79,19 @@ exports.grammar = {
 
 		If: [
 			'IfBlock',
-			['IfBlock Else', '$$ = $1.addElse($2);']
+			['IfBlock ELSE : TERMINATOR IND Chunks DED', '$$ = $1.addElse({chunks: $6});']
 		],
 
 		IfBlock: [
 			['IF ( Value ) : TERMINATOR IND Chunks DED TERMINATOR', '$$ = new yy.If("true", $3, $8);'],
-			['IF ( Comparison ) : TERMINATOR IND Chunks DED TERMINATOR', '$$ = new yy.If("true", $3, $8);'],
-			['IfBlock ELSEIF ( Value ) : TERMINATOR IND Chunks DED TERMINATOR', '$$ = $1.addElseIf("true", $4, $9);'],
-			['IfBlock ELSEIF ( Comparison ) : TERMINATOR IND Chunks DED TERMINATOR', '$$ = $1.addElseIf("true", $4, $9);'],
+			['IfBlock ELSEIF ( Value ) : TERMINATOR IND Chunks DED', '$$ = $1.addElseIf("true", $4, $9);']
 		],
 
-		Else: [
-			['ELSE : TERMINATOR IND Chunks DED', '$$ = {chunks: $5};']
-		],
+		// IfBlock: [
+		// 	['IF ( Value ) : TERMINATOR IND Chunks DED', '$$ = new yy.If("true", $3, $8);'],
+		// 	['IfBlock ELSEIF ( Value ) : TERMINATOR IND Chunks DED', '$$ = $1.addElseIf("true", $4, $9);'],
+		// 	['IfBlock ELSE : TERMINATOR IND Chunks DED', '$1.addElse({chunks: $7});']
+		// ],
 
 		For: [
 			['FOR ( Identifier IN Iterable ) : TERMINATOR IND Chunks DED', '$$ = new yy.For($3, $5, false, $10);'],
@@ -142,7 +143,7 @@ exports.grammar = {
 
 		Accessor: [
 			['. Identifier', '$$ = {type: "prop", val: $2};'],
-			['[ Value ]', '$$ = {type: "index", val: $2};']
+			['[ Expression ]', '$$ = {type: "index", val: $2};']
 		],
 
 		Identifier: [

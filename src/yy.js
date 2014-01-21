@@ -57,7 +57,7 @@ exports.yy = {
 		};
 	},
 
-	Assignment: function (identifier, value) {
+	Assignment: function (optProperty, identifier, value) {
 		this.type = 'assignment';
 		this.write = function (scope) {
 			if (value.type === 'class') {
@@ -68,8 +68,14 @@ exports.yy = {
 				value = value.write(scope);
 			}
 
-			scope.useVar(identifier);
-			return identifier.write(scope) + ' = ' + value;
+			var start = '';
+			if (optProperty === true) {
+				start = 'this.';
+			} else {
+				scope.useVar(identifier);
+			}
+
+			return start + identifier.write(scope) + ' = ' + value;
 		};
 	},
 
@@ -461,31 +467,33 @@ exports.yy = {
 			var out;
 			switch (relation) {
 			case '**':
-				scope.useVar(a);
-				scope.useVar(b);
+				((a.type !== 'literal') ? scope.useVar(a) : false);
+				((b.type !== 'literal') ? scope.useVar(b) : false);
 				out = 'Math.pow(' + a.write(scope) + ', ' + b.write(scope) + ')';
 				break;
 			case '++':
-				scope.useVar(a);
+				((a.type !== 'literal') ? scope.useVar(a) : false);
 				if (b === true) {
 					// increment comes AFTER value
 					out = a.write(scope) + '++';
 				} else {
+					// increment comes BEFORE value
 					out = '++' + a.write(scope);
 				}
 				break;
 			case '--':
-				scope.useVar(a);
+				((a.type !== 'literal') ? scope.useVar(a) : false);
 				if (b === true) {
 					// decrement comes AFTER value
 					out = a.write(scope) + '--';
 				} else {
+					// decrement comes BEFORE value
 					out = '--' + a.write(scope);
 				}
 				break;
 			default:
-				scope.useVar(a);
-				scope.useVar(b);
+				((a.type !== 'literal') ? scope.useVar(a) : false);
+				((b.type !== 'literal') ? scope.useVar(b) : false);
 				out = a.write(scope) + ' ' + relation + ' ' + b.write(scope);
 			}
 

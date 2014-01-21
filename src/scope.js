@@ -26,11 +26,7 @@ exports.Scope = function () {
 	};
 
 	this.useVar = function (identifier) {
-		if (identifier.parent) {
-			identifier = identifier.parent();
-		} else {
-			identifier = identifier.write(scope);
-		}
+		identifier = identifier.write(scope).split('.')[0];
 
 		var i, last = scope[scope.length - 1].uses;
 
