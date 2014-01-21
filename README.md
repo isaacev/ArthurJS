@@ -16,8 +16,8 @@ The Arthur specification is currently quite sparse and I intend to add the follo
 | ✓             | Arrays                         |
 | ✓             | Objects                        |
 | ✓             | For and While loops            |
-| 1 weeks       | Switch/Case/Default            |
-| 1 weeks       | Try/Catch/Finally              |
+| 1 week        | Switch/Case/Default            |
+| 1 week        | Try/Catch/Finally              |
 | 2 weeks       | Basic Classes and Inheiritance |
 | 2 weeks       | Improved CLI                   |
 | -             | 1.0 Release                    |
