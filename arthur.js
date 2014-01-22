@@ -24,8 +24,35 @@ function loadFile(path, callback) {
 }
 
 loadFile('./test.arthur', function (data) {
-	console.log(Parser.parse(data + '\n').compile({
-		header: true,
-		bare: false
-	}));
+	var tokenize = true;
+	if (!tokenize) {
+		console.log(Parser.parse(data + '\n').compile({
+			header: true,
+			bare: false
+		}));
+	} else {
+		lexer.setInput(data);
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+		console.log(lexer.lex());
+	}
 });
