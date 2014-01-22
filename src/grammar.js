@@ -16,6 +16,10 @@ exports.grammar = {
 			'Statement'
 		],
 
+		Block: [
+			['IND Chunks DED', '$$ = $2;']
+		],
+
 		Expression: [
 			'Assignment',
 			'Value',
@@ -63,7 +67,6 @@ exports.grammar = {
 			['-- Assignable', '$$ = new yy.Operation("--", $2, false);'],
 			['Assignable ++', '$$ = new yy.Operation("++", $1, true);'],
 			['Assignable --', '$$ = new yy.Operation("--", $1, true);'],
-
 			['Value MATH Value', '$$ = new yy.Operation($2, $1, $3);'],
 			'Comparison'
 		],
@@ -79,19 +82,16 @@ exports.grammar = {
 
 		If: [
 			'IfBlock',
-			['IfBlock ELSE : TERMINATOR IND Chunks DED', '$$ = $1.addElse({chunks: $6});']
+			'IfBlock Else'
 		],
 
 		IfBlock: [
-			['IF ( Value ) : TERMINATOR IND Chunks DED TERMINATOR', '$$ = new yy.If("true", $3, $8);'],
-			['IfBlock ELSEIF ( Value ) : TERMINATOR IND Chunks DED', '$$ = $1.addElseIf("true", $4, $9);']
+			'IF ( Value ) : TERMINATOR Block'
 		],
 
-		// IfBlock: [
-		// 	['IF ( Value ) : TERMINATOR IND Chunks DED', '$$ = new yy.If("true", $3, $8);'],
-		// 	['IfBlock ELSEIF ( Value ) : TERMINATOR IND Chunks DED', '$$ = $1.addElseIf("true", $4, $9);'],
-		// 	['IfBlock ELSE : TERMINATOR IND Chunks DED', '$1.addElse({chunks: $7});']
-		// ],
+		Else: [
+			'TERMINATOR ELSE : TERMINATOR Block'
+		],
 
 		For: [
 			['FOR ( Identifier IN Iterable ) : TERMINATOR IND Chunks DED', '$$ = new yy.For($3, $5, false, $10);'],
@@ -210,7 +210,7 @@ exports.grammar = {
 		// from lowest precedence to highest
 		// does   foo = 4 ** 2 -> foo = Math.pow(4, 2)
 		// instead of          -> Math.pow(foo = 4, 2)
-		['right', 'IF', 'ELSE'],
+		['left', 'Else'],
 		['right', '=', ':', 'COMPOUND_ASSIGN', 'RETURN', 'THROW', 'EXTENDS'],
 		['nonassoc', 'INDENT', 'OUTDENT'],
 		['left', 'LOGIC'],
