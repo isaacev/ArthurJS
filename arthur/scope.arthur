@@ -1,0 +1,17 @@
+exports.Scope = def:
+	scope = []
+	temp = 0
+	extensions = {}
+
+	.printLocal = def:
+		local = scope[scope.length - 1].vars
+
+		if (local.length > 0):
+			out = 'var '
+			for (i in local as variable):
+				if (i > 0):
+					# TODO +=
+					out = out + ', '
+
+				if (typeof variable == 'object'):
+					out = out + variable[0] + ' = ' + variable[1]
