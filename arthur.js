@@ -27,7 +27,10 @@ function loadFile(path, callback) {
 loadFile('./test.arthur', function (data) {
 	var tokenize = false;
 	if (!tokenize) {
-		console.log(Parser.parse(data + '\n'));
+		console.log(Parser.parse(data + '\n').compile({
+			header: false,
+			bare: true
+		}));
 	} else {
 		lexer.setInput(data);
 		console.log(lexer.lex());
