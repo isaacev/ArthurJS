@@ -3,6 +3,7 @@
 var Fs = require('fs');
 var Jison = require('jison').Parser;
 
+//var grammar = require('./src/grammar.js').grammar;
 var grammar = require('./src/grammar.js').grammar;
 var lexer = require('./src/lexer.js').lexer;
 var yy = require('./src/yy.js').yy;
@@ -24,11 +25,11 @@ function loadFile(path, callback) {
 }
 
 loadFile('./test.arthur', function (data) {
-	var tokenize = true;
+	var tokenize = false;
 	if (!tokenize) {
 		console.log(Parser.parse(data + '\n').compile({
-			header: true,
-			bare: false
+			header: false,
+			bare: true
 		}));
 	} else {
 		lexer.setInput(data);

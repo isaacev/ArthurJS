@@ -1,55 +1,54 @@
 exports.grammar = {
 	bnf: {
 		Root: [
-			['TERMINATOR EOF', 'return new yy.Root([]);'],
 			['Chunks EOF', 'return new yy.Root($1);']
 		],
 
 		Chunks: [
 			['Chunk', '$$ = [$1];'],
-			['Chunks TERMINATOR Chunk', '$1.push($3);'],
-			'Chunks TERMINATOR'
+			['Chunks Chunk', '$1.push($2);']
 		],
 
 		Chunk: [
-			'Expression',
-			'Statement'
+			['Expression TERMINATOR', '$$ = $1;'],
+			['Statement TERMINATOR', '$$ = $1;']
 		],
 
 		Block: [
-			['IND Chunks DED', '$$ = $2;']
+			['TERMINATOR IND Chunks DED', '$$ = $3;']
 		],
 
 		Expression: [
-			'Assignment',
-			'Value',
-			'Operation',
-			'Def',
-			'If',
-			'For',
-			'While'
+			['Value', '$$ = $1;'],
+			['Operation', '$$ = $1;'],
+			['Assignment', '$$ = $1;'],
+			['Def', '$$ = $1;'],
+			['If', '$$ = $1;'],
+			['IfElse', '$$ = $1;'],
+			['For', '$$ = $1;'],
+			['While', '$$ = $1;']
 		],
 
 		Statement: [
 			['COMMENT', '/* ignore */'],
-			'Return'
+			['Return', '$$ = $1;']
 		],
 
 		Return: [
 			['RETURN', '$$ = new yy.Return();'],
-			['RETURN Expression', '$$ = new yy.Return($2);']
+			['RETURN SimpleExpression', '$$ = new yy.Return($2);']
 		],
 
 		Assignment: [
 			['Assignable = Expression', '$$ = new yy.Assignment(false, $1, $3);'],
-			['. Identifier = Expression', '$$ = new yy.Assignment(true, $2, $4);'],
+			['. Identifier = Expression', '$$ = new yy.Assignment(true, $2, $4);']
 		],
 
 		Value: [
-			'Call',
-			'Assignable',
-			'Literal',
-			'Parenthetical'
+			['Call', '$$ = $1;'],
+			['Assignable', '$$ = $1;'],
+			['Literal', '$$ = $1;'],
+			['Parenthetical', '$$ = $1;']
 		],
 
 		Call: [
@@ -62,6 +61,11 @@ exports.grammar = {
 			['( ArgList )', '$$ = $2;']
 		],
 
+		ArgList: [
+			['Value', '$$ = [$1];'],
+			['ArgList , Value', '$1.push($3);']
+		],
+
 		Operation: [
 			['++ Assignable', '$$ = new yy.Operation("++", $2, false);'],
 			['-- Assignable', '$$ = new yy.Operation("--", $2, false);'],
@@ -72,39 +76,54 @@ exports.grammar = {
 		],
 
 		Def: [
-			['DefHead IND Chunks DED', '$$ = new yy.Def($1, $3);']
+			['DefHead Block', '$$ = new yy.Def($1, $2);']
 		],
 
 		DefHead: [
-			['DEF : TERMINATOR', '$$ = false;'],
-			['DEF ( ParamList ) : TERMINATOR', '$$ = $3;']
+			['DEF :', '$$ = false;'],
+			['DEF ( ParamList ) :', '$$ = $3;']
+		],
+
+		ParamList: [
+			['Param', '$$ = [$1];'],
+			['ParamList , Param', '$1.push($3);']
+		],
+
+		Param: [
+			['Identifier', '$$ = new yy.Parameter($1, false);'],
+			['Identifier = Value', '$$ = new yy.Parameter($1, $3);']
 		],
 
 		If: [
-			'IfBlock',
-			'IfBlock Else'
+			['IfBlock', '$$ = $1;', {
+				prec: 'THEN'
+			}]
+		],
+
+		IfElse: [
+			['IfBlock ElseBlock', '$$ = $1.addElse($2);']
 		],
 
 		IfBlock: [
-			'IF ( Value ) : TERMINATOR Block'
+			['IF ( Identifier ) : Block TERMINATOR', '$$ = new yy.If("true", $3, $6);']
 		],
 
-		Else: [
-			'TERMINATOR ELSE : TERMINATOR Block'
+		ElseBlock: [
+			['ELSE : Block', '$$ = $3;']
 		],
 
 		For: [
-			['FOR ( Identifier IN Iterable ) : TERMINATOR IND Chunks DED', '$$ = new yy.For($3, $5, false, $10);'],
-			['FOR ( Identifier IN Iterable AS Identifier ) : TERMINATOR IND Chunks DED', '$$ = new yy.For($3, $5, $7, $12);']
+			['FOR ( Identifier IN Iterable ) : Block', '$$ = new yy.For($3, $5, false, $8);'],
+			['FOR ( Identifier IN Iterable AS Identifier ) : Block', '$$ = new yy.For($3, $5, $7, $10);']
 		],
 
 		While: [
-			['WHILE ( Comparisons ) : TERMINATOR IND Chunks DED', '$$ = new yy.While($3, $8);']
+			['WHILE ( Comparison ) : Block', '$$ = new yy.While($3, $6);']
 		],
 
 		Iterable: [
-			'Value',
-			'Range'
+			['Value', '$$ = $1;'],
+			['Range', '$$ = $1;']
 		],
 
 		Range: [
@@ -122,28 +141,13 @@ exports.grammar = {
 		],
 
 		Assignable: [
-			'Identifier',
+			['Identifier', '$$ = $1;'],
 			['Value Accessor', '$$ = new yy.Accessor($1, $2);']
-		],
-
-		ParamList: [
-			['Param', '$$ = [$1];'],
-			['ParamList , Param', '$1.push($3);']
-		],
-
-		Param: [
-			['Identifier', '$$ = new yy.Parameter($1, false);'],
-			['Identifier = Value', '$$ = new yy.Parameter($1, $3);']
-		],
-
-		ArgList: [
-			['Value', '$$ = [$1];'],
-			['ArgList , Value', '$1.push($3);']
 		],
 
 		Accessor: [
 			['. Identifier', '$$ = {type: "prop", val: $2};'],
-			['[ Expression ]', '$$ = {type: "index", val: $2};']
+			['[ SimpleExpression ]', '$$ = {type: "index", val: $2};']
 		],
 
 		Identifier: [
@@ -151,10 +155,10 @@ exports.grammar = {
 		],
 
 		Literal: [
-			'AlphaNumeric',
-			'Array',
-			'Object',
-			'Boolean'
+			['AlphaNumeric', '$$ = $1;'],
+			['Array', '$$ = $1;'],
+			['Object', '$$ = $1;'],
+			['Boolean', '$$ = $1;']
 		],
 
 		Boolean: [
@@ -207,22 +211,13 @@ exports.grammar = {
 	},
 
 	operators: [
-		// from lowest precedence to highest
-		// does   foo = 4 ** 2 -> foo = Math.pow(4, 2)
-		// instead of          -> Math.pow(foo = 4, 2)
-		['left', 'Else'],
-		['right', '=', ':', 'COMPOUND_ASSIGN', 'RETURN', 'THROW', 'EXTENDS'],
-		['nonassoc', 'INDENT', 'OUTDENT'],
+		['nonassoc', 'THEN'],
+		['nonassoc', 'ELSE', 'START', 'ROOT'],
 		['left', 'LOGIC'],
-		['left', 'COMPARE'],
-		['left', 'RELATION'],
-		['left', 'SHIFT'],
 		['left', '+', '-'],
 		['left', 'MATH'],
 		['right', 'UNARY'],
-		['left', '?'],
 		['nonassoc', '++', '--'],
-		['left', 'CALL_START', 'CALL_END'],
-		['left', '.', '?.', '::']
+		['left', '.']
 	]
-}
+};
