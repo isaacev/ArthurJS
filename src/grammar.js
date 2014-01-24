@@ -10,31 +10,28 @@ exports.grammar = {
 		],
 
 		Chunk: [
-			['Expression', '$$ = $1;'],
-			['Statement', '$$ = $1;']
+			['Expression TERMINATOR', '$$ = $1;'],
+			['Statement TERMINATOR', '$$ = $1;']
 		],
 
 		Block: [
-			['TERMINATOR IND Chunk DED TERMINATOR', '$$ = $3;']
+			['TERMINATOR IND Chunks DED', '$$ = $3;']
 		],
 
 		Expression: [
-			['SimpleExpression TERMINATOR', '$$ = $1;'],
+			['Value', '$$ = $1;'],
+			['Operation', '$$ = $1;'],
+			['Assignment', '$$ = $1;'],
 			['Def', '$$ = $1;'],
 			['If', '$$ = $1;'],
+			['IfElse', '$$ = $1;'],
 			['For', '$$ = $1;'],
 			['While', '$$ = $1;']
 		],
 
-		SimpleExpression: [
-			['Assignment', '$$ = $1;'],
-			['Value', '$$ = $1;'],
-			['Operation', '$$ = $1;']
-		],
-
 		Statement: [
-			['COMMENT TERMINATOR', '/* ignore */'],
-			['Return TERMINATOR', '$$ = $1;']
+			['COMMENT', '/* ignore */'],
+			['Return', '$$ = $1;']
 		],
 
 		Return: [
@@ -100,12 +97,15 @@ exports.grammar = {
 		If: [
 			['IfBlock', '$$ = $1;', {
 				prec: 'THEN'
-			}],
+			}]
+		],
+
+		IfElse: [
 			['IfBlock ElseBlock', '$$ = $1.addElse($2);']
 		],
 
 		IfBlock: [
-			['IF ( Identifier ) : Block', '$$ = new yy.If("true", $3, $6);']
+			['IF ( Identifier ) : Block TERMINATOR', '$$ = new yy.If("true", $3, $6);']
 		],
 
 		ElseBlock: [
