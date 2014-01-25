@@ -1,7 +1,7 @@
 exports.grammar = {
 	bnf: {
 		Root: [
-			['Chunks EOF', 'return new yy.Root($1);']
+			['Chunks', 'return new yy.Root($1);']
 		],
 
 		Chunks: [
@@ -24,7 +24,6 @@ exports.grammar = {
 			['Assignment', '$$ = $1;'],
 			['Def', '$$ = $1;'],
 			['If', '$$ = $1;'],
-			['IfElse', '$$ = $1;'],
 			['For', '$$ = $1;'],
 			['While', '$$ = $1;']
 		],
@@ -97,15 +96,12 @@ exports.grammar = {
 		If: [
 			['IfBlock', '$$ = $1;', {
 				prec: 'THEN'
-			}]
-		],
-
-		IfElse: [
-			['IfBlock ElseBlock', '$$ = $1.addElse($2);']
+			}],
+			['IfBlock ElseBlock', '$1.addElse($2);']
 		],
 
 		IfBlock: [
-			['IF ( Identifier ) : Block TERMINATOR', '$$ = new yy.If("true", $3, $6);']
+			['IF ( Identifier ) : Block', '$$ = new yy.If("true", $3, $6);']
 		],
 
 		ElseBlock: [
@@ -211,8 +207,8 @@ exports.grammar = {
 	},
 
 	operators: [
-		['nonassoc', 'THEN'],
 		['nonassoc', 'ELSE', 'START', 'ROOT'],
+		['nonassoc', 'THEN'],
 		['left', 'LOGIC'],
 		['left', '+', '-'],
 		['left', 'MATH'],

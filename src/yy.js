@@ -222,7 +222,9 @@ exports.yy = {
 		};
 
 		this.addElse = function (chunks) {
-			elseObj = chunks;
+			elseObj = {
+				chunks: chunks
+			};
 			return this;
 		};
 	},

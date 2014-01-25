@@ -4,8 +4,9 @@ var Lexer = require('lex');
 
 var row = 1;
 var col = 1;
-
 var indent = [0];
+
+var ongoing = [];
 
 var lexer = exports.lexer = new Lexer(function (char) {
 	throw new Error('Unexpected character at row ' + row + ', col ' + ': "' + char + '"');
@@ -57,11 +58,9 @@ lexer.addRule(/[a-zA-Z]+/, function (raw) {
 	col += raw.length;
 	this.yytext = raw;
 
-	if (RESERVED_AR.indexOf(raw) > -1) {
-		// reserved ARTHUR word
-		return raw.toUpperCase();
-	} else if (RESERVED_JS.indexOf(raw) > -1) {
-		// reserved JavaScript word
+	var out;
+	if (RESERVED_AR.indexOf(raw) > -1 || RESERVED_JS.indexOf(raw) > -1) {
+		// reserved ARTHUR or JS word
 		return raw.toUpperCase();
 	} else {
 		return 'IDENTIFIER';
@@ -102,10 +101,6 @@ lexer.addRule(/\-?[0-9]+(?:\.[0-9]+)?/, function (raw) {
 	return 'NUMBER';
 });
 
-// end of file
-lexer.addRule(/$/, function () {
-	return 'EOF';
-});
-
 var RESERVED_AR = ['def', 'as', 'elseif'];
 var RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'while', 'in'];
+var BLOCKING = ['def', 'if', 'else', 'for', 'while'];

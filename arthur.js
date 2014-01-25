@@ -5,11 +5,27 @@ var Jison = require('jison').Parser;
 
 //var grammar = require('./src/grammar.js').grammar;
 var grammar = require('./src/grammar.js').grammar;
-var lexer = require('./src/lexer.js').lexer;
+var lexerLib = require('./src/lexer.js').lexer;
+var i = -1;
+var tokens = ['IF', '(', 'IDENTIFIER', ')', ':', 'TERMINATOR', 'IND', 'IDENTIFIER', '(', ')', 'TERMINATOR', 'DED', 'ELSE', ':', 'TERMINATOR', 'IND', 'IDENTIFIER', '(', ')', 'TERMINATOR', 'DED', 'TERMINATOR'];
+var literal = ['if', '(', 'bar', ')', ':', false, false, 'foobar', '(', ')', false, false, 'else', ':', false, false, 'foobar', '(', ')', false, false, false];
+
+function lexer() {
+	this.setInput = function (input) {
+		return this;
+	};
+	this.lex = function () {
+		i++;
+		if (literal[i] !== false) {
+			this.yytext = literal[i];
+		}
+		return tokens[i];
+	};
+};
 var yy = require('./src/yy.js').yy;
 
 var Parser = new Jison(grammar);
-Parser.lexer = lexer;
+Parser.lexer = new lexer();
 Parser.yy = yy;
 
 function loadFile(path, callback) {
