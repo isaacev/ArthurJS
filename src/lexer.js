@@ -1,19 +1,30 @@
 'use strict';
 
 var indent = [0];
+var pos = {
+	col: 0,
+	row: 0
+}
 
 var rules = {
 	space: [
 		/^ +/,
 		function (raw) {
+			pos.col += raw.length;
 			return false;
 		}
 	],
 	terminator: [
 		/^\n+/,
 		function (raw, lex, increment) {
+			pos.col = 0;
+			pos.row += raw.length;
+
 			var indentation = /^\t*/.exec(lex.remaining.substr(1))[0].length;
 			increment(indentation);
+
+			pos.col += indentation;
+
 			var tokens = ['TERMINATOR'];
 
 			if (indentation > indent[0]) {
@@ -33,15 +44,32 @@ var rules = {
 			return tokens;
 		}
 	],
+	comment: [
+		/\#[^\n]*/,
+		function (raw) {
+			pos.col += raw.length;
+			return 'COMMENT';
+		}
+	],
 	identifier: [
-		/^[a-z]+/,
+		/^[a-zA-Z]+/,
 		function (raw, lex) {
+			pos.col += raw.length;
+
 			if (RESERVED_AR.indexOf(raw) > -1 || RESERVED_JS.indexOf(raw) > -1) {
 				// reserved ARTHUR or JS word
+
+				// this bit of code is really what this entire custom lexer is
+				// about. to solve the problem of the "dangling else" I needed a
+				// lexer that would remove the ambiguous TERMINATOR that occured
+				// between IF blocks and ELSE blocks. I needed to build my own because
+				// Lex.js didn't offer the granular support I required. anyway,
+				// enough rambling: here it is, stupid thing
 				if (raw === 'else' && lex.tokens[lex.tokens.length - 1] === 'TERMINATOR') {
 					lex.tokens.pop();
 					lex.literals.pop();
 				}
+
 				return raw.toUpperCase();
 			} else {
 				return 'IDENTIFIER';
@@ -50,13 +78,17 @@ var rules = {
 	],
 	logicSymbol: [
 		/^\>\=|^\<\=|^\=\=|^\>|^\</,
-		function () {
+		function (raw) {
+			pos.col += raw.length;
+
 			return 'LOGIC';
 		}
 	],
 	literalSymbol: [
 		/^\+\+|^\+|^\-\-|^\.\.|^\.|^\-|^\/|^\*\*|^\*|^\,|^\(|^\)|^\[|^\]|^\{|^\}|^\=|^\:|^\?|^\@/,
 		function (raw) {
+			pos.col += raw.length;
+
 			if (['+', '-', '*', '/', '**'].indexOf(raw) > -1) {
 				return 'MATH';
 			} else {
@@ -66,20 +98,24 @@ var rules = {
 	],
 	string: [
 		/^\'([^\']*)\'/,
-		function () {
+		function (raw) {
+			pos.col += raw.length;
+
 			return 'STRING';
 		}
 	],
 	number: [
 		/^\-?[0-9]+(?:\.[0-9]+)?/,
-		function () {
+		function (raw) {
+			pos.col += raw.length;
+
 			return 'NUMBER';
 		}
 	],
 	unexpected: [
 		/^./,
 		function (raw, lex) {
-			throw Error('Unexpected "' + raw + '"');
+			throw Error('Unexpected "' + raw + '" at line ' + (pos.row + 1) + ', column ' + (pos.col + 1));
 		}
 	]
 };
@@ -136,6 +172,7 @@ function Lexer() {
 			// returns `number` or `false`
 			this.index += check(this, rules.space) ||
 				check(this, rules.terminator) ||
+				check(this, rules.comment) ||
 				check(this, rules.identifier) ||
 				check(this, rules.logicSymbol) ||
 				check(this, rules.literalSymbol) ||

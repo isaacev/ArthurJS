@@ -2,7 +2,7 @@ var Fs = require('fs');
 var Jison = require('jison').Parser;
 
 var grammar = require('./src/grammar.js').grammar;
-var lexer = require('./src/lexer2.js').lexer;
+var lexer = require('./src/lexer.js').lexer;
 var yy = require('./src/yy.js').yy;
 
 var Parser = new Jison(grammar);
@@ -14,4 +14,5 @@ Fs.readFile('./test.arthur', 'utf8', function (err, data) {
 		bare: false,
 		header: true
 	}));
+	//console.log((new lexer()).setInput(data, true));
 });

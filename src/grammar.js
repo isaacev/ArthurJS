@@ -35,7 +35,7 @@ exports.grammar = {
 
 		Return: [
 			['RETURN', '$$ = new yy.Return();'],
-			['RETURN SimpleExpression', '$$ = new yy.Return($2);']
+			['RETURN Expression', '$$ = new yy.Return($2);']
 		],
 
 		Assignment: [
@@ -143,7 +143,7 @@ exports.grammar = {
 
 		Accessor: [
 			['. Identifier', '$$ = {type: "prop", val: $2};'],
-			['[ SimpleExpression ]', '$$ = {type: "index", val: $2};']
+			['[ Expression ]', '$$ = {type: "index", val: $2};']
 		],
 
 		Identifier: [
