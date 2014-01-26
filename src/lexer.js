@@ -16,11 +16,11 @@ var rules = {
 	],
 	terminator: [
 		/^\n+/,
-		function (raw, lex, increment) {
+		function (raw, lex, modify, increment) {
 			pos.col = 0;
 			pos.row += raw.length;
 
-			var indentation = /^\t*/.exec(lex.remaining.substr(1))[0].length;
+			var indentation = /^\t*/.exec(lex.remaining.substr(raw.length))[0].length;
 			increment(indentation);
 
 			pos.col += indentation;
@@ -40,7 +40,6 @@ var rules = {
 				}
 			}
 
-			//console.log(tokens);
 			return tokens;
 		}
 	],
@@ -53,7 +52,7 @@ var rules = {
 	],
 	identifier: [
 		/^[a-zA-Z]+/,
-		function (raw, lex) {
+		function (raw, lex, modify) {
 			pos.col += raw.length;
 
 			if (RESERVED_AR.indexOf(raw) > -1 || RESERVED_JS.indexOf(raw) > -1) {
@@ -70,6 +69,16 @@ var rules = {
 					lex.literals.pop();
 				}
 
+				if (raw === 'typeof') {
+					if (lex.tokens[lex.tokens.length - 1] === '!') {
+						lex.tokens.pop();
+						lex.literals.pop();
+						modify('!typeof');
+						return 'LOGIC';
+					}
+					return 'LOGIC';
+				}
+
 				return raw.toUpperCase();
 			} else {
 				return 'IDENTIFIER';
@@ -77,7 +86,7 @@ var rules = {
 		}
 	],
 	logicSymbol: [
-		/^\>\=|^\<\=|^\=\=|^\>|^\</,
+		/^\>\=|^\<\=|^\=\=|^\!\=|^\&\&|^\|\||^\>|^\</,
 		function (raw) {
 			pos.col += raw.length;
 
@@ -85,7 +94,7 @@ var rules = {
 		}
 	],
 	literalSymbol: [
-		/^\+\+|^\+|^\-\-|^\.\.|^\.|^\-|^\/|^\*\*|^\*|^\,|^\(|^\)|^\[|^\]|^\{|^\}|^\=|^\:|^\?|^\@/,
+		/^\+\+|^\+|^\-\-|^\.\.|^\.|^\-|^\/|^\*\*|^\*|^\,|^\(|^\)|^\[|^\]|^\{|^\}|^\=|^\:|^\?|^\@|^\!/,
 		function (raw) {
 			pos.col += raw.length;
 
@@ -97,9 +106,12 @@ var rules = {
 		}
 	],
 	string: [
-		/^\'([^\']*)\'/,
-		function (raw) {
+		/^\'[^\']*\'/,
+		function (raw, lex, modify) {
 			pos.col += raw.length;
+
+			// remove quotes from string
+			modify(raw.substr(1).substr(0, raw.length - 2));
 
 			return 'STRING';
 		}
@@ -112,6 +124,14 @@ var rules = {
 			return 'NUMBER';
 		}
 	],
+	regex: [
+		/\/(?:[^\/\\]|\\.)+\//,
+		function (raw) {
+			pos.col += raw.length;
+
+			return 'REGEX';
+		}
+	],
 	unexpected: [
 		/^./,
 		function (raw, lex) {
@@ -122,15 +142,20 @@ var rules = {
 
 var WHITESPACE = ['TERMINATOR', 'IND', 'DED'];
 var RESERVED_AR = ['def', 'as', 'elseif'];
-var RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'while', 'in'];
+var RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'while', 'in', 'typeof'];
 
+// `check` inspects a specific rule to see if it matches
+// the remainder of the string. if the rule does, `check`
+// returns the number of 
 function check(lex, rule) {
 	var match = rule[0].exec(lex.remaining);
 	if (match !== null) {
 		// advance the index
 		var advancement = match[0].length;
 
-		var result = rule[1](match[0], lex, function (increment) {
+		var result = rule[1](match[0], lex, function (modification) {
+			match[0] = modification;
+		}, function (increment) {
 			advancement += increment;
 		});
 		if (result !== false) {
@@ -166,18 +191,18 @@ function Lexer() {
 	};
 	this.lex = function () {
 		while (this.remaining = this.input.slice(this.index)) {
-			// check(this, rules[i]);
-			// returns `undefined` or `false`
-
-			// returns `number` or `false`
+			// `check` returns `number` or `false`
+			// if nothing recognizes the symbol, it gets passed
+			// to a catch-all `unexpected` which throws an exception
 			this.index += check(this, rules.space) ||
 				check(this, rules.terminator) ||
 				check(this, rules.comment) ||
+				check(this, rules.string) ||
+				check(this, rules.number) ||
+				check(this, rules.regex) ||
 				check(this, rules.identifier) ||
 				check(this, rules.logicSymbol) ||
 				check(this, rules.literalSymbol) ||
-				check(this, rules.string) ||
-				check(this, rules.number) ||
 				check(this, rules.unexpected);
 		}
 		return {
@@ -187,6 +212,11 @@ function Lexer() {
 	};
 }
 
+// this chunk wraps the above code into an interface
+// compatible with Jison. when `setInput` is called,
+// the lexer tokenizes the ENTIRE string, modifying
+// the stream as required. the stream is then fed token
+// by token back to Jison as needed
 exports.lexer = function () {
 	var scanner = new Lexer();
 	var tokens, literals;

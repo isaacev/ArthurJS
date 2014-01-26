@@ -151,14 +151,6 @@ exports.yy = {
 		};
 	},
 
-	Extension: function (string) {
-		this.type = 'extension';
-		this.write = function (scope) {
-			scope.extension(string);
-			return false;
-		};
-	},
-
 	If: function (flag, exp, chunks) {
 		var elseIfObjs = [];
 		var elseObj = false;
@@ -378,10 +370,23 @@ exports.yy = {
 		this.type = 'comparison';
 		this.write = function (scope) {
 			var out = '';
-			if (relation == '?') {
+			if (relation === '?') {
 				// test for existance
-				out += '(typeof ' + a.write(scope) + ' !== \'undefined\' && ' + a.write(scope) + ' !== null)'
+				out += '(typeof ' + a.write(scope) + ' !== \'undefined\' && ' + a.write(scope) + ' !== null)';
+			} else if (relation === 'typeof') {
+				// test for same type
+				out += '(typeof ' + a.write(scope) + ' === ' + b.write(scope) + ')';
+			} else if (relation === '!typeof') {
+				// test for NOT type
+				out += '(typeof ' + a.write(scope) + ' !== ' + b.write(scope) + ')';
 			} else {
+				switch (relation) {
+				case '!=':
+					relation = '!==';
+					break;
+				case '==':
+					relation = '===';
+				}
 				out += a.write(scope) + ' ';
 				out += relation + ' ';
 				out += b.write(scope);
@@ -469,12 +474,12 @@ exports.yy = {
 			var out;
 			switch (relation) {
 			case '**':
-				((a.type !== 'literal') ? scope.useVar(a) : false);
-				((b.type !== 'literal') ? scope.useVar(b) : false);
+				//((a.type !== 'literal') ? scope.useVar(a) : false);
+				//((b.type !== 'literal') ? scope.useVar(b) : false);
 				out = 'Math.pow(' + a.write(scope) + ', ' + b.write(scope) + ')';
 				break;
 			case '++':
-				((a.type !== 'literal') ? scope.useVar(a) : false);
+				//((a.type !== 'literal') ? scope.useVar(a) : false);
 				if (b === true) {
 					// increment comes AFTER value
 					out = a.write(scope) + '++';
@@ -484,7 +489,7 @@ exports.yy = {
 				}
 				break;
 			case '--':
-				((a.type !== 'literal') ? scope.useVar(a) : false);
+				//((a.type !== 'literal') ? scope.useVar(a) : false);
 				if (b === true) {
 					// decrement comes AFTER value
 					out = a.write(scope) + '--';
@@ -494,8 +499,8 @@ exports.yy = {
 				}
 				break;
 			default:
-				((a.type !== 'literal') ? scope.useVar(a) : false);
-				((b.type !== 'literal') ? scope.useVar(b) : false);
+				//((a.type !== 'literal') ? scope.useVar(a) : false);
+				//((b.type !== 'literal') ? scope.useVar(b) : false);
 				out = a.write(scope) + ' ' + relation + ' ' + b.write(scope);
 			}
 

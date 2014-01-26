@@ -67,12 +67,6 @@ exports.Scope = function () {
 		last.push([string, alias]);
 	};
 
-	this.extension = function (string) {
-		if (extensions[string] === undefined) {
-			extensions[string] = {};
-		}
-	};
-
 	this.printUses = function (aliases) {
 		aliases = aliases || false;
 

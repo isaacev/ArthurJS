@@ -70,8 +70,13 @@ exports.grammar = {
 			['-- Assignable', '$$ = new yy.Operation("--", $2, false);'],
 			['Assignable ++', '$$ = new yy.Operation("++", $1, true);'],
 			['Assignable --', '$$ = new yy.Operation("--", $1, true);'],
+			['Math', '$$ = $1;'],
+			['Comparison', '$$ = $1;']
+		],
+
+		Math: [
 			['Value MATH Value', '$$ = new yy.Operation($2, $1, $3);'],
-			'Comparison'
+			['Math MATH Value', '$$ = new yy.Operation($2, $1, $3);']
 		],
 
 		Def: [
@@ -101,7 +106,8 @@ exports.grammar = {
 		],
 
 		IfBlock: [
-			['IF ( Identifier ) : Block', '$$ = new yy.If("true", $3, $6);']
+			['IF ( Identifier ) : Block', '$$ = new yy.If("true", $3, $6);'],
+			['IF ( Comparisons ) : Block', '$$ = new yy.If("comparison", $3, $6);']
 		],
 
 		ElseBlock: [
@@ -168,7 +174,8 @@ exports.grammar = {
 
 		AlphaNumeric: [
 			['NUMBER', '$$ = new yy.Literal("number", $1);'],
-			['STRING', '$$ = new yy.Literal("string", $1);']
+			['STRING', '$$ = new yy.Literal("string", $1);'],
+			['REGEX', '$$ = new yy.Literal("regex", $1);']
 		],
 
 		Array: [
