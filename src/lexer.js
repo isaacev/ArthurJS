@@ -74,7 +74,13 @@ var rules = {
 						lex.tokens.pop();
 						lex.literals.pop();
 						modify('!typeof');
-						return 'LOGIC';
+					}
+					return 'LOGIC';
+				} else if (raw === 'instanceof') {
+					if (lex.tokens[lex.tokens.length - 1] === '!') {
+						lex.tokens.pop();
+						lex.literals.pop();
+						modify('!instanceof');
 					}
 					return 'LOGIC';
 				}
@@ -142,7 +148,7 @@ var rules = {
 
 var WHITESPACE = ['TERMINATOR', 'IND', 'DED'];
 var RESERVED_AR = ['def', 'as', 'elseif'];
-var RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'while', 'in', 'typeof'];
+var RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'while', 'in', 'typeof', 'instanceof', 'break', 'new'];
 
 // `check` inspects a specific rule to see if it matches
 // the remainder of the string. if the rule does, `check`
