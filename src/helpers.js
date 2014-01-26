@@ -140,9 +140,9 @@ exports.buildIterator = function (series, index, scope, yy) {
 			j = j.write(scope);
 
 			out += 'for (';
-			out += i + ' = ' + j + ' = ' + first + '; '
-			out += first + ' <= ' + second + ' ? ' + j + ' <= ' + second + ' : ' + j + ' >= ' + second + '; '
-			out += i + ' = ' + first + ' <= ' + second + ' ? ++' + j + ' : --' + j + ') {\n'
+			out += i + ' = ' + j + ' = ' + first + '; ';
+			out += first + ' <= ' + second + ' ? ' + j + ' <= ' + second + ' : ' + j + ' >= ' + second + '; ';
+			out += i + ' = ' + first + ' <= ' + second + ' ? ++' + j + ' : --' + j + ') {\n';
 		}
 	} else {
 		// series is a single variable
