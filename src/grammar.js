@@ -1,6 +1,7 @@
 exports.grammar = {
 	bnf: {
 		Root: [
+			['TERMINATOR', 'return new yy.Root([]);'],
 			['Chunks', 'return new yy.Root($1);']
 		],
 
