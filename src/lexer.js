@@ -106,7 +106,7 @@ var rules = {
 		}
 	],
 	string: [
-		/^\'[^\']*\'/,
+		/^\'(?:[^\'\\]|\\.)*\'/,
 		function (raw, lex, modify) {
 			pos.col += raw.length;
 
@@ -125,7 +125,7 @@ var rules = {
 		}
 	],
 	regex: [
-		/\/(?:[^\/\\]|\\.)+\//,
+		/^\/(?:[^\/\\]|\\.)+\//,
 		function (raw) {
 			pos.col += raw.length;
 
@@ -196,15 +196,17 @@ function Lexer() {
 			// to a catch-all `unexpected` which throws an exception
 			this.index += check(this, rules.space) ||
 				check(this, rules.terminator) ||
-				check(this, rules.comment) ||
 				check(this, rules.string) ||
 				check(this, rules.number) ||
 				check(this, rules.regex) ||
+				check(this, rules.comment) ||
 				check(this, rules.identifier) ||
 				check(this, rules.logicSymbol) ||
 				check(this, rules.literalSymbol) ||
 				check(this, rules.unexpected);
 		}
+
+		console.log(this.tokens);
 		return {
 			tokens: this.tokens,
 			literals: this.literals
