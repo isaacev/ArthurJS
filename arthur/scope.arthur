@@ -19,7 +19,6 @@ exports.Scope = def:
 			return ''
 
 	.useVar = def(identifier):
-		identifier = identifier.write(scope).split('.')[0]
 		last = scope[scope.length - 1].uses
 		for (i in last as variable):
 			if (variable[1] != false && variable[1] == identifier):
