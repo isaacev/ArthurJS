@@ -1,0 +1,122 @@
+alphabet = 'abcdefghijklmnopqrstuvwxyz'
+
+exports.tab = def(scope):
+	level = scope.getLevel() + scope.getTemp()
+	out = ''
+	for (i in level):
+		out = out + '\t'
+	return out
+
+exports.writeBlock = def(scope, block, iterator = false, defaults = []):
+	out = ''
+	noSemiColon = ['if', 'for', 'while', 'try', 'switch']
+	hasSemiNewline = /.*\;\n+$/
+	hasSemi = /.*\;$/
+	for (i in block as line):
+		if (line typeof 'object'):
+			line = line.write(scope)
+			if (noSemiColon.indexOf(line.type) == -1):
+				if (hasSemiNewline.test(line)):
+					ending = ''
+				elseif (hasSemi.test(line)):
+					ending = '\n'
+				else:
+					ending = ';\n'
+			else:
+				ending = '\n'
+		out = out + exports.tab(scope) + line + ending
+		if (iterator?):
+			iterator(line, ending)
+	return out
+
+exports.writeLogic = def(comparisons, scope):
+	out = ''
+	for (i in comparisons as comparison):
+		if ((length - 1) == i):
+			ending = ''
+		else:
+			ending = ' '
+		out = out + comparison.write(scope) + ending
+
+		if (length > (i + 1)):
+			out = out + comparisons[i + 1] + ' '
+	return out
+
+exports.getNextIterator = def(scope, yy):
+	test = 'i'
+	while (scope.exists('_' + test) == true):
+		arr = test.split('')
+		for (i in arr):
+			arr[i] = alphabet.indexOf(arr[i] + 1)
+			if (arr[i] > 25):
+				arr[i] = 0
+				if (i == 0):
+					arr.push(0)
+			else:
+				break
+		for (i in arr):
+			arr[i] = alphabet[arr[i]]
+		test = arr.join('')
+	return yy.Id.create('_' + test)
+
+exports.getNextLength = def(scope, yy):
+	num = 1
+	test = '_len'
+	while(scope.exists(test) == true):
+		test = '_len' + (num + 1)
+	return yy.Id.create(test)
+
+exports.buildIterator = def(series, index, scope, yy):
+	out = ''
+	if (series instanceof Array):
+		first = series[0]
+		second = series[1]
+		if (first.type == 'literal' && second.type == 'literal'):
+			firstNum = Number(first.write(scope))
+			secondNum = Number(second.write(scope))
+
+			if (firstNum <= secondNum):
+				comparator = '<='
+				adjustment = '++'
+			else:
+				comparator = '>='
+				adjustment = '--'
+
+			i = index.write(scope)
+			j = exports.getNextIterator(scope, yy)
+			scope.useVar(j)
+			j = j.write(scope)
+
+			out = 'for ('
+			out = out + i + ' = ' + j + ' = ' + first.write(scope) + '; '
+			out = out + j + ' ' + comparator + ' ' + second.write(scope) + '; '
+			out = out + j + ' = ' + i + adjustment + ') {\n'
+		else:
+			first = first.write(scope)
+			second = second.write(scope)
+
+			i = index.write(scope)
+			j = exports.getNextIterator(scope, yy)
+			scope.useVar(j)
+			j = j.write(scope)
+
+			out = out + 'for ('
+			out = out + i + ' = ' + j + ' = ' + first + '; '
+			out = out + first + ' <= ' + second + ' ? ' + j + ' <= ' + second + ' : ' + j + ' >= ' + second + '; '
+			out = out + i + ' = ' + first + ' <= ' + second + ' ? ++' + j + ' : --' + j + ') {\n'
+	else:
+		i = index.write(scope)
+		j = exports.getNextIterator(scope, yy)
+		scope.useVar(j)
+		j = j.write(scope)
+
+		len = exports.getNextLength(scope, yy)
+		scope.useVar(len)
+		len = len.write(scope)
+
+		out = out + 'for ('
+		out = out + i + ' = ' + j + ' = 0, ' + len + ' = ' + series.write(scope) + '.length; '
+		out = out + j + ' < ' + len + '; '
+		out = out + i + ' = ++' + j + ') {\n'
+
+	return out
