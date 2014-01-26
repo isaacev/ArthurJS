@@ -31,7 +31,6 @@ exports.grammar = {
 
 		Statement: [
 			['COMMENT', '/* ignore */'],
-			['Return', '$$ = $1;']
 			['Return', '$$ = $1;'],
 			['BREAK', '$$ = new yy.Break();']
 		],
@@ -65,7 +64,6 @@ exports.grammar = {
 
 		ArgList: [
 			['Value', '$$ = [$1];'],
-			['ArgList , Value', '$1.push($3);']
 			['Operation', '$$ = [$1];'],
 			['ArgList , Value', '$1.push($3);'],
 			['ArgList , Operation', '$1.push($3);']
