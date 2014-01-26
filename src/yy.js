@@ -3,12 +3,22 @@
 var Helpers = require('./helpers.js');
 var Scope = require('./scope.js').Scope;
 
+// these are helper functions imported from helpers.js
+// they provide utility services like generating the
+// correct number of tab characters, looping through
+// and printing chunks of the parser tree and making
+// sure custom looping variables (ex: _i, _len) are
+// unique within their contexts
 var tab = Helpers.tab;
 var writeBlock = Helpers.writeBlock;
 var writeLogic = Helpers.writeLogic;
 var buildIterator = Helpers.buildIterator;
 
 exports.yy = {
+	// the Root object is returned after parsing actions to a
+	// callback. this object builds a Scope instance, inspects
+	// parsing options like `header` and `bare` and formats
+	// the returning JavaScript accordingly
 	Root: function (lines) {
 		this.type = 'root';
 		this.compile = function (opts) {
@@ -71,7 +81,7 @@ exports.yy = {
 			var start = '';
 			if (optProperty === true) {
 				start = 'this.';
-			} else {
+			} else if (identifier.write(scope).split('.').length === 1 && identifier.type === 'identifier') {
 				scope.useVar(identifier);
 			}
 
@@ -532,7 +542,7 @@ exports.yy = {
 	},
 
 	Array: function (elements) {
-		var pretty = false;
+		var pretty = true;
 		this.type = 'array';
 		this.write = function (scope) {
 			scope.indentTemp();
@@ -544,7 +554,7 @@ exports.yy = {
 					lines++;
 
 					if (pretty === true) {
-						beginning = ((i > 0) ? ', \n' : '') + tab(scope);
+						beginning = ((i > 0) ? ',\n' : '') + tab(scope);
 					} else {
 						beginning = ((i > 0) ? ', ' : '');
 					}
@@ -562,7 +572,7 @@ exports.yy = {
 	},
 
 	Object: function (properties) {
-		var pretty = false;
+		var pretty = true;
 		this.type = 'object';
 		this.write = function (scope) {
 			scope.indentTemp();
@@ -574,7 +584,7 @@ exports.yy = {
 					lines++;
 
 					if (pretty === true) {
-						beginning = ((i > 0) ? ', \n' : '') + tab(scope);
+						beginning = ((i > 0) ? ',\n' : '') + tab(scope);
 					} else {
 						beginning = ((i > 0) ? ', ' : '');
 					}
