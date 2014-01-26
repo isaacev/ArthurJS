@@ -136,7 +136,7 @@ exports.grammar = {
 		],
 
 		While: [
-			['WHILE ( Comparison ) : Block', '$$ = new yy.While($3, $6);']
+			['WHILE ( Comparisons ) : Block', '$$ = new yy.While($3, $6);']
 		],
 
 		Iterable: [
