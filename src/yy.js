@@ -143,6 +143,13 @@ exports.yy = {
 		};
 	},
 
+	Break: function () {
+		this.type = 'break';
+		this.write = function () {
+			return 'break;';
+		};
+	},
+
 	Use: function (string, alias) {
 		this.type = 'use';
 		this.write = function (scope) {
