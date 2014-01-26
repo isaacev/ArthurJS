@@ -102,12 +102,24 @@ exports.grammar = {
 			['IfBlock', '$$ = $1;', {
 				prec: 'THEN'
 			}],
-			['IfBlock ElseBlock', '$1.addElse($2);']
+			['IfBlock ElseIfBlocks', '$1.addElseIfs($2);'],
+			['IfBlock ElseBlock', '$1.addElse($2);'],
+			['IfBlock ElseIfBlocks ElseBlock', '$1.addElseIfs($2).addElse($3);']
 		],
 
 		IfBlock: [
-			['IF ( Identifier ) : Block', '$$ = new yy.If("true", $3, $6);'],
+			['IF ( Value ) : Block', '$$ = new yy.If("true", $3, $6);'],
 			['IF ( Comparisons ) : Block', '$$ = new yy.If("comparison", $3, $6);']
+		],
+
+		ElseIfBlocks: [
+			['ElseIf', '$$ = [$1];'],
+			['ElseIfBlocks ElseIf', '$1.push($2);']
+		],
+
+		ElseIf: [
+			['ELSEIF ( Value ) : Block', '$$ = {flag: "true", exp: $3, chunks: $6};'],
+			['ELSEIF ( Comparisons ) : Block', '$$ = {flag: "comparison", exp: $3, chunks: $6};'],
 		],
 
 		ElseBlock: [

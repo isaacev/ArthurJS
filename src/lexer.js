@@ -64,7 +64,7 @@ var rules = {
 				// between IF blocks and ELSE blocks. I needed to build my own because
 				// Lex.js didn't offer the granular support I required. anyway,
 				// enough rambling: here it is, stupid thing
-				if (raw === 'else' && lex.tokens[lex.tokens.length - 1] === 'TERMINATOR') {
+				if ((raw === 'else' || raw === 'elseif') && lex.tokens[lex.tokens.length - 1] === 'TERMINATOR') {
 					lex.tokens.pop();
 					lex.literals.pop();
 				}
@@ -206,7 +206,6 @@ function Lexer() {
 				check(this, rules.unexpected);
 		}
 
-		console.log(this.tokens);
 		return {
 			tokens: this.tokens,
 			literals: this.literals

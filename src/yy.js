@@ -204,12 +204,8 @@ exports.yy = {
 			return out;
 		};
 
-		this.addElseIf = function (flag, exp, chunks) {
-			elseIfObjs.push({
-				flag: flag,
-				exp: exp,
-				chunks: chunks
-			});
+		this.addElseIfs = function (elseIfs) {
+			elseIfObjs = elseIfs;
 			return this;
 		};
 
