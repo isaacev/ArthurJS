@@ -160,14 +160,6 @@ exports.yy = {
 		};
 	},
 
-	Use: function (string, alias) {
-		this.type = 'use';
-		this.write = function (scope) {
-			scope.use(string, alias);
-			return false;
-		};
-	},
-
 	If: function (flag, exp, chunks) {
 		var elseIfObjs = [];
 		var elseObj = false;
