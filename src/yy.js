@@ -375,6 +375,12 @@ exports.yy = {
 			} else if (relation === '!typeof') {
 				// test for NOT type
 				out += '(typeof ' + a.write(scope) + ' !== ' + b.write(scope) + ')';
+			} else if (relation === 'instanceof') {
+				// test for same instance
+				out += '(' + a.write(scope) + ' instanceof ' + b.write(scope) + ')'
+			} else if (relation === '!instanceof') {
+				// test for NOT instance
+				out += '!(' + a.write(scope) + ' instanceof ' + b.write(scope) + ')';
 			} else {
 				switch (relation) {
 				case '!=':
