@@ -223,8 +223,6 @@ exports.grammar = {
 		],
 
 		BlockProps: [
-			['Identifier = Value', '$$ = [{key: $1, val: $3}];'],
-			['BlockProps TERMINATOR Identifier = Value', '$1.push({key: $3, val: $5});'],
 			['Identifier = Expression', '$$ = [{key: $1, val: $3}];'],
 			['BlockProps TERMINATOR Identifier = Expression', '$1.push({key: $3, val: $5});'],
 			'BlockProps TERMINATOR'
