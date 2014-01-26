@@ -201,13 +201,13 @@ exports.grammar = {
 		],
 
 		InlineElems: [
-			['Value', '$$ = [$1];'],
-			['InlineElems , Value', '$1.push($3);']
+			['Expression', '$$ = [$1];'],
+			['InlineElems , Expression', '$1.push($3);']
 		],
 
 		BlockElems: [
-			['Value', '$$ = [$1];'],
-			['BlockElems TERMINATOR Value', '$1.push($3);'],
+			['Expression', '$$ = [$1];'],
+			['BlockElems TERMINATOR Expression', '$1.push($3);'],
 			'BlockElems TERMINATOR'
 		],
 
