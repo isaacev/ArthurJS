@@ -114,6 +114,7 @@ exports.grammar = {
 
 		IfBlock: [
 			['IF ( Value ) : Block', '$$ = new yy.If("true", $3, $6);'],
+			['IF ( Operation ) : Block', '$$ = new yy.If("operation", $3, $6);'],
 			['IF ( Comparison ) : Block', '$$ = new yy.If("comparison", $3, $6);']
 		],
 
@@ -124,6 +125,7 @@ exports.grammar = {
 
 		ElseIf: [
 			['ELSEIF ( Value ) : Block', '$$ = {flag: "true", exp: $3, chunks: $6};'],
+			['ELSEIF ( Operation ) : Block', '$$ = {flag: "operation", exp: $3, chunks: $6};'],
 			['ELSEIF ( Comparison ) : Block', '$$ = {flag: "comparison", exp: $3, chunks: $6};'],
 		],
 
