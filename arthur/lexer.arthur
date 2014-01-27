@@ -1,0 +1,197 @@
+indent = [0]
+pos = {
+	col = 0
+	row = 0
+}
+
+rules = {
+	space = [
+		/^ +/
+		def (raw):
+			pos.col = pos.col + raw.length
+			return false
+	]
+
+	terminator = [
+		/^\n+/
+		def (raw, lex, modify, increment):
+			pos.col = 0
+			pos.row = pos.row + raw.length
+
+			indentation = /^\t*/.exec(lex.remaining.substr(raw.length))[0].length
+			increment(indentation)
+
+			pos.col = pos.col + indentation
+
+			tokens = ['TERMINATOR']
+
+			if(indentation > indent[0]):
+				indent.unshift(indentation)
+				tokens.push('IND')
+			else:
+				while(indentation < indent[0]):
+					tokens.push('DED')
+					tokens.push('TERMINATOR')
+					indent.shift()
+
+			return tokens
+	]
+
+	comment = [
+		/^\#[^\n]*/
+		def (raw):
+			pos.col = pos.col + raw.length
+			return 'COMMENT'
+	]
+
+	identifier = [
+		/^[a-zA-Z]+/
+		def (raw, lex, modify):
+			pos.col = pos.col + raw.length
+
+			if ((RESERVED_AR.indexOf(raw) > -1) || (RESERVED_JS.indexOf(raw) > -1)):
+				if (((raw == 'else') || (raw == 'elseif')) && (lex.tokens[lex.tokens.length - 1] == 'TERMINATOR')):
+					lex.tokens.pop()
+					lex.literals.pop()
+
+				if (raw == 'typeof'):
+					if (lex.tokens[lex.tokens.length - 1] == '!'):
+						lex.tokens.pop()
+						lex.literals.pop()
+						modify('!typeof')
+					return 'LOGIC'
+				elseif (raw == 'instanceof'):
+					if (lex.tokens[lex.tokens.length - 1] == '!'):
+						lex.tokens.pop()
+						lex.literals.pop()
+						modify('!instanceof')
+					return 'LOGIC'
+
+				return raw.toUpperCase()
+			else:
+				return 'IDENTIFIER'
+	]
+
+	logicSymbol = [
+		/^\>\=|^\<\=|^\=\=|^\!\=|^\&\&|^\|\||^\>|^\</
+		def (raw):
+			pos.col = pos.col + raw.length
+
+			return 'LOGIC'
+	]
+
+	literalSymbol = [
+		/^\+\+|^\+|^\-\-|^\.\.|^\.|^\-|^\/|^\*\*|^\*|^\,|^\(|^\)|^\[|^\]|^\{|^\}|^\=|^\:|^\?|^\@|^\!/
+		def (raw):
+			pos.col = pos.col + raw.length
+
+			if (['+', '-', '*', '/', '**'].indexOf(raw) > -1):
+				return 'MATH'
+			else:
+				return raw
+	]
+
+	string = [
+		/^\'(?:[^\'\\]|\\.)*\'/
+		def (raw, lex, modify):
+			pos.col = pos.col + raw.length
+
+			modify(raw.substr(1).substr(0, raw.length - 1))
+			return 'STRING'
+	]
+
+	number = [
+		/^\-?[0-9]+(?:\.[0-9]+)?/
+		def (raw):
+			pos.col = pos.col + raw.length
+
+			return 'NUMBER'
+	]
+
+	regex = [
+		/^\/(?:[^\/\\]|\\.)+\//
+		def (raw):
+			pos.col = pos.col + raw.length
+
+			return 'REGEX'
+	]
+
+	unexpected = [
+		/^./
+		def (raw, lex):
+			throw Error('Unexpected "' + raw + '" at line ' + (pos.row + 1) + ', column ' + (pos.col + 1))
+	]
+}
+
+WHITESPACE = ['TERMINATOR', 'IND', 'DED']
+RESERVED_AR = ['def', 'as', 'elseif']
+RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'while', 'in', 'typeof', 'instanceof', 'break', 'throw', 'new']
+
+check = def(lex, rule):
+	match = rule[0].exec(lex.remaining)
+	if (match != null):
+		advancement = match[0].length
+
+		modification = def (mod):
+			match[0] = mod
+
+		increment = def (inc):
+			advancement = advancement + inc
+
+		result = rule[1](match[0], lex, modification, increment)
+
+		if (result != false):
+			if (result instanceof Array):
+				for (i in result):
+					lex.literals.push(false)
+					lex.tokens.push(result[i])
+			else:
+				if (WHITESPACE.indexOf(result) > -1):
+					lex.literals.push(false)
+				else:
+					lex.literals.push(match[0])
+				lex.tokens.push(result)
+		return advancement
+	else:
+		return false
+
+Lexer = def:
+	.tokens = []
+	.literals = []
+	.remaining = ''
+	.index = 0
+
+	.setInput = def(input):
+		.input = input
+		.remaining = input
+
+	.lex = def:
+		while (.remaining.length > 0):
+			.index = .index + (check(this, rules.space) || check(this, rules.terminator) || check(this, rules.string) || check(this, rules.number) || check(this, rules.regex) || check(this, rules.comment) || check(this, rules.identifier) || check(this, rules.logicSymbol) || check(this, rules.literalSymbol) || check(this, rules.unexpected))
+
+			.remaining.splice(.index)
+		return {
+			tokens = .tokens
+			literals = .literals
+		}
+
+exports.lexer = def:
+	scanner = Lexer.create()
+	i = -1
+
+	.setInput = def (input, returnQuick):
+		scanner.setInput(input)
+		results = scanner.lex()
+		tokens = results.tokens
+		literals = results.literals
+
+		if (returnQuick == true):
+			console.log(tokens)
+			return
+		return this
+
+	.lex = def:
+		i++
+		if (literals[i] != false):
+			.yytext = literals[i]
+		return tokens[i]
