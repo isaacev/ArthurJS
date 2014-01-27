@@ -450,6 +450,9 @@ exports.yy = {
 			case 'regex':
 				out = String(raw);
 				break;
+			case 'null':
+				out = 'null';
+				break;
 			}
 			return out;
 		};
