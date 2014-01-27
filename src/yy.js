@@ -11,7 +11,6 @@ var Scope = require('./scope.js').Scope;
 // unique within their contexts
 var tab = Helpers.tab;
 var writeBlock = Helpers.writeBlock;
-var writeLogic = Helpers.writeLogic;
 var buildIterator = Helpers.buildIterator;
 
 exports.yy = {
