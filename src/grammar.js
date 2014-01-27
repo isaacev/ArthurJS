@@ -65,7 +65,9 @@ exports.grammar = {
 
 		ArgList: [
 			['Value', '$$ = [$1];'],
-			['ArgList , Value', '$1.push($3);']
+			['Operation', '$$ = [$1];'],
+			['ArgList , Value', '$1.push($3);'],
+			['ArgList , Operation', '$1.push($3);']
 		],
 
 		Operation: [
