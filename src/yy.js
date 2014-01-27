@@ -78,9 +78,7 @@ exports.yy = {
 			}
 
 			var start = '';
-			if (optProperty === true) {
-				start = 'this.';
-			} else if (identifier.write(scope).split('.').length === 1 && identifier.type === 'identifier') {
+			if (identifier.write(scope).split('.').length === 1 && identifier.type === 'identifier') {
 				scope.useVar(identifier);
 			}
 
@@ -175,8 +173,6 @@ exports.yy = {
 
 			if (flag === 'true') {
 				out += 'if (' + exp.write(scope) + ' === true) {\n';
-			} else if (flag === 'comparison') {
-				out += 'if (' + writeLogic(exp, scope) + ') {\n';
 			} else {
 				out += 'if (' + exp.write(scope) + ') {\n';
 			}
@@ -193,8 +189,6 @@ exports.yy = {
 
 				if (current.flag === 'true') {
 					out += ' else if (' + current.exp.write(scope) + ' === true) {\n';
-				} else if (current.flag === 'comparison') {
-					out += ' else if (' + writeLogic(current.exp, scope) + ') {\n';
 				} else {
 					out += ' else if (' + current.exp.write(scope) + ') {\n';
 				}
@@ -360,7 +354,7 @@ exports.yy = {
 		this.write = function (scope) {
 			var out = '';
 
-			out += 'while (' + writeLogic(comparisons, scope) + ') {\n';
+			out += 'while (' + comparisons.write(scope) + ') {\n';
 
 			scope.indentTemp();
 			out += writeBlock(scope, block);
@@ -371,45 +365,59 @@ exports.yy = {
 	},
 
 	Id: function (raw) {
+		var accessible = false;
 		this.type = 'identifier';
 		this.write = function () {
-			return raw.toString();
+			return (accessible ? 'this.' : '') + raw.toString();
+		};
+		this.accessThis = function () {
+			accessible = true;
+			return this;
 		};
 	},
 
-	Comparison: function (relation, a, b) {
+	Comparison: function (a, relation, b) {
+		var list = [a, relation];
+		if (b !== false) {
+			list.push(b);
+		}
 		this.type = 'comparison';
 		this.write = function (scope) {
-			var out = '';
-			if (relation === '?') {
-				// test for existance
-				out += '(typeof ' + a.write(scope) + ' !== \'undefined\' && ' + a.write(scope) + ' !== null)';
-			} else if (relation === 'typeof') {
-				// test for same type
-				out += '(typeof ' + a.write(scope) + ' === ' + b.write(scope) + ')';
-			} else if (relation === '!typeof') {
-				// test for NOT type
-				out += '(typeof ' + a.write(scope) + ' !== ' + b.write(scope) + ')';
-			} else if (relation === 'instanceof') {
-				// test for same instance
-				out += '(' + a.write(scope) + ' instanceof ' + b.write(scope) + ')'
-			} else if (relation === '!instanceof') {
-				// test for NOT instance
-				out += '!(' + a.write(scope) + ' instanceof ' + b.write(scope) + ')';
-			} else {
-				switch (relation) {
-				case '!=':
-					relation = '!==';
-					break;
-				case '==':
-					relation = '===';
+			var next, out = '';
+
+			for (var i = 0, len = list.length; i < len; i++) {
+				next = list[i + 1] || false;
+
+				if (next === 'typeof') {
+					// test for same type
+					out += '(typeof ' + list[i].write(scope) + ' === ' + list[i + 2].write(scope) + ') ';
+					i += 2;
+				} else if (next === '!typeof') {
+					// test for NOT type
+					out += '(typeof ' + list[i].write(scope) + ' !== ' + list[i + 2].write(scope) + ') ';
+					i += 2;
+				} else if (next === 'instanceof') {
+					// test for same instance
+					out += '(' + list[i].write(scope) + ' instanceof ' + list[i + 2].write(scope) + ') ';
+					i += 2;
+				} else if (next === '!instanceof') {
+					// test for NOT instance
+					out += '!(' + list[i].write(scope) + ' instanceof ' + list[i + 2].write(scope) + ') ';
+					i += 2;
+				} else {
+					out += (list[i].write ? list[i].write(scope) : list[i]) + ' ';
 				}
-				out += a.write(scope) + ' ';
-				out += relation + ' ';
-				out += b.write(scope);
 			}
 
-			return out;
+			return out.trim();
+		};
+		this.append = function (relation, a, exists) {
+			list.push(relation);
+			list.push(a);
+			if (exists !== false) {
+				list.push(exists);
+			}
+			return this;
 		};
 	},
 
@@ -517,6 +525,9 @@ exports.yy = {
 					// decrement comes BEFORE value
 					out = '--' + a.write(scope);
 				}
+				break;
+			case '?':
+				out = '(typeof ' + a.write(scope) + ' !== \'undefined\' && ' + a.write(scope) + ' !== null)';
 				break;
 			default:
 				//((a.type !== 'literal') ? scope.useVar(a) : false);
