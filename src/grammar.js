@@ -22,6 +22,7 @@ exports.grammar = {
 		Expression: [
 			['Value', '$$ = $1;'],
 			['Operation', '$$ = $1;'],
+			['Comparison', '$$ = $1;'],
 			['Assignment', '$$ = $1;'],
 			['Def', '$$ = $1;'],
 			['If', '$$ = $1;'],
@@ -64,9 +65,7 @@ exports.grammar = {
 
 		ArgList: [
 			['Value', '$$ = [$1];'],
-			['Operation', '$$ = [$1];'],
-			['ArgList , Value', '$1.push($3);'],
-			['ArgList , Operation', '$1.push($3);']
+			['ArgList , Value', '$1.push($3);']
 		],
 
 		Operation: [
@@ -74,8 +73,8 @@ exports.grammar = {
 			['-- Assignable', '$$ = new yy.Operation("--", $2, false);'],
 			['Assignable ++', '$$ = new yy.Operation("++", $1, true);'],
 			['Assignable --', '$$ = new yy.Operation("--", $1, true);'],
-			['Math', '$$ = $1;'],
-			['Comparison', '$$ = $1;']
+			['Assignable ?', '$$ = new yy.Operation("?", $1);'],
+			['Math', '$$ = $1;']
 		],
 
 		Math: [
@@ -113,7 +112,7 @@ exports.grammar = {
 
 		IfBlock: [
 			['IF ( Value ) : Block', '$$ = new yy.If("true", $3, $6);'],
-			['IF ( Comparisons ) : Block', '$$ = new yy.If("comparison", $3, $6);']
+			['IF ( Comparison ) : Block', '$$ = new yy.If("comparison", $3, $6);']
 		],
 
 		ElseIfBlocks: [
@@ -123,7 +122,7 @@ exports.grammar = {
 
 		ElseIf: [
 			['ELSEIF ( Value ) : Block', '$$ = {flag: "true", exp: $3, chunks: $6};'],
-			['ELSEIF ( Comparisons ) : Block', '$$ = {flag: "comparison", exp: $3, chunks: $6};'],
+			['ELSEIF ( Comparison ) : Block', '$$ = {flag: "comparison", exp: $3, chunks: $6};'],
 		],
 
 		ElseBlock: [
@@ -136,7 +135,7 @@ exports.grammar = {
 		],
 
 		While: [
-			['WHILE ( Comparisons ) : Block', '$$ = new yy.While($3, $6);']
+			['WHILE ( Comparison ) : Block', '$$ = new yy.While($3, $6);']
 		],
 
 		Iterable: [
@@ -148,14 +147,13 @@ exports.grammar = {
 			['{ Value .. Value }', '$$ = [$2, $4];']
 		],
 
-		Comparisons: [
-			['Comparison', '$$ = [$1];'],
-			['Comparisons LOGIC Comparison', '$1.push($2, $3);']
-		],
-
 		Comparison: [
-			['Value ?', '$$ = new yy.Comparison($2, $1);'],
-			['Value LOGIC Value', '$$ = new yy.Comparison($2, $1, $3);']
+			['Value LOGIC Value', '$$ = new yy.Comparison($1, $2, $3);'],
+			['Value LOGIC Operation', '$$ = new yy.Comparison($1, $2, $3);'],
+			['Operation LOGIC Value', '$$ = new yy.Comparison($1, $2, $3);'],
+			['Operation LOGIC Operation', '$$ = new yy.Comparison($1, $2, $3);'],
+			['Comparison LOGIC Value', '$$ = $1.append($2, $3, false);'],
+			['Comparison LOGIC Operation', '$$ = $1.append($2, $3, false);']
 		],
 
 		Assignable: [
@@ -239,6 +237,7 @@ exports.grammar = {
 		['left', 'MATH'],
 		['right', 'UNARY'],
 		['nonassoc', '++', '--'],
+		['nonassoc', '?'],
 		['left', '.']
 	]
 };
