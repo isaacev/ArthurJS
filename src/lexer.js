@@ -44,7 +44,7 @@ var rules = {
 		}
 	],
 	comment: [
-		/\#[^\n]*/,
+		/^\#[^\n]*/,
 		function (raw) {
 			pos.col += raw.length;
 			return 'COMMENT';
