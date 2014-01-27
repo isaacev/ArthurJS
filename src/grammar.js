@@ -174,6 +174,7 @@ exports.grammar = {
 
 		Literal: [
 			['AlphaNumeric', '$$ = $1;'],
+			['NULL', '$$ = new yy.Literal("null");'],
 			['Array', '$$ = $1;'],
 			['Object', '$$ = $1;'],
 			['Boolean', '$$ = $1;']
