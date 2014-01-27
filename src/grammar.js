@@ -160,6 +160,7 @@ exports.grammar = {
 
 		Assignable: [
 			['Identifier', '$$ = $1;'],
+			['. Identifier', '$$ = $2.accessThis();'],
 			['Value Accessor', '$$ = new yy.Accessor($1, $2);']
 		],
 
