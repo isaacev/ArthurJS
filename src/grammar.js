@@ -42,8 +42,7 @@ exports.grammar = {
 		],
 
 		Assignment: [
-			['Assignable = Expression', '$$ = new yy.Assignment(false, $1, $3);'],
-			['. Identifier = Expression', '$$ = new yy.Assignment(true, $2, $4);']
+			['Assignable = Expression', '$$ = new yy.Assignment($1, $3);']
 		],
 
 		Value: [
