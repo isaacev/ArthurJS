@@ -66,7 +66,7 @@ exports.yy = {
 		};
 	},
 
-	Assignment: function (optProperty, identifier, value) {
+	Assignment: function (identifier, value) {
 		this.type = 'assignment';
 		this.write = function (scope) {
 			if (value.type === 'class') {
