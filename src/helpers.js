@@ -47,19 +47,6 @@ exports.writeBlock = function (scope, block, iterator, defaults) {
 	return out;
 }
 
-exports.writeLogic = function (comparisons, scope) {
-	var ending, out = '';
-
-	for (var i = 0, length = comparisons.length; i < length; i += 2) {
-		out += comparisons[i].write(scope) + ((length - 1 === i) ? '' : ' ');
-		if (length > (i + 1)) {
-			out += comparisons[i + 1] + ' ';
-		}
-	}
-
-	return out;
-}
-
 exports.getNextIterator = function (scope, yy) {
 	var arr, i, test = 'i';
 
