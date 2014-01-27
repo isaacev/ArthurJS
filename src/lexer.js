@@ -148,7 +148,7 @@ var rules = {
 
 var WHITESPACE = ['TERMINATOR', 'IND', 'DED'];
 var RESERVED_AR = ['def', 'as', 'elseif'];
-var RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'while', 'in', 'typeof', 'instanceof', 'break', 'new'];
+var RESERVED_JS = ['true', 'false', 'null', 'if', 'else', 'return', 'for', 'while', 'in', 'typeof', 'instanceof', 'break', 'throw', 'new'];
 
 // `check` inspects a specific rule to see if it matches
 // the remainder of the string. if the rule does, `check`
