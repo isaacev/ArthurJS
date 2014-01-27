@@ -3,9 +3,11 @@ var alphabet = 'abcdefghijklmnopqrstuvwxyz';
 exports.tab = function (scope) {
 	var level = scope.getLevel() + scope.getTemp();
 	var out = '';
+
 	for (var i = 0; i < level; i++) {
 		out += '\t';
 	}
+
 	return out;
 }
 
@@ -63,7 +65,7 @@ exports.getNextIterator = function (scope, yy) {
 					arr.push(0);
 				}
 			} else {
-				// no need to carry, so return
+				// no need to carry, so break loop
 				break;
 			}
 		}
@@ -81,7 +83,6 @@ exports.getNextIterator = function (scope, yy) {
 exports.getNextLength = function (scope, yy) {
 	var num = 1,
 		test = '_len';
-
 
 	while (scope.exists(test)) {
 		test = '_len' + (num + 1);
