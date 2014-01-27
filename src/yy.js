@@ -159,6 +159,13 @@ exports.yy = {
 		};
 	},
 
+	Throw: function (expression) {
+		this.type = 'throw';
+		this.write = function (scope) {
+			return 'throw ' + expression.write(scope) + ';';
+		}
+	},
+
 	If: function (flag, exp, chunks) {
 		var elseIfObjs = [];
 		var elseObj = false;
