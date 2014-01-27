@@ -51,7 +51,7 @@ var rules = {
 		}
 	],
 	identifier: [
-		/^[a-zA-Z]+/,
+		/^[a-zA-Z\$\_][a-zA-Z0-9\$\_]*/,
 		function (raw, lex, modify) {
 			pos.col += raw.length;
 
