@@ -32,7 +32,8 @@ exports.grammar = {
 		Statement: [
 			['COMMENT', '/* ignore */'],
 			['Return', '$$ = $1;'],
-			['BREAK', '$$ = new yy.Break();']
+			['BREAK', '$$ = new yy.Break();'],
+			['THROW Expression', '$$ = new yy.Throw($2);']
 		],
 
 		Return: [
