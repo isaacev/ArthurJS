@@ -54,7 +54,7 @@ exports.yy = {
 			if (opts.bare !== true) {
 				out = '(function(' + usesTails + ') {\n' + variables + out.replace(/\s+$/, '\n') + tab(scope) + '}).call(this' + usesArgs + ');';
 			} else {
-				out = out.replace(/\s+$/, '');
+				out = variables + '\n' + out.replace(/\s+$/, '');
 			}
 
 			// add optional header
