@@ -71,6 +71,7 @@ exports.grammar = {
 		],
 
 		Operation: [
+			['NEW Value', '$$ = new yy.Operation("new", $2);'],
 			['++ Assignable', '$$ = new yy.Operation("++", $2, false);'],
 			['-- Assignable', '$$ = new yy.Operation("--", $2, false);'],
 			['Assignable ++', '$$ = new yy.Operation("++", $1, true);'],
@@ -237,11 +238,11 @@ exports.grammar = {
 		['nonassoc', 'ELSE', 'START', 'ROOT'],
 		['nonassoc', 'THEN'],
 		['left', 'LOGIC'],
+		['nonassoc', '?'],
 		['left', '+', '-'],
 		['left', 'MATH'],
-		['right', 'UNARY'],
+		['right', 'NEW'],
 		['nonassoc', '++', '--'],
-		['nonassoc', '?'],
 		['left', '.']
 	]
 };

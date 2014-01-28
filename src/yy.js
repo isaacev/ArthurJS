@@ -529,6 +529,9 @@ exports.yy = {
 			case '?':
 				out = '(typeof ' + a.write(scope) + ' !== \'undefined\' && ' + a.write(scope) + ' !== null)';
 				break;
+			case 'new':
+				out = 'new ' + a.write(scope);
+				break;
 			default:
 				//((a.type !== 'literal') ? scope.useVar(a) : false);
 				//((b.type !== 'literal') ? scope.useVar(b) : false);
