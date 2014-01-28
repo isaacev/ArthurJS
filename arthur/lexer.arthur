@@ -176,7 +176,7 @@ Lexer = def:
 		}
 
 exports.lexer = def:
-	scanner = Lexer.create()
+	scanner = new Lexer()
 	i = -1
 
 	.setInput = def (input, returnQuick):

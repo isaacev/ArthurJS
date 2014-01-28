@@ -44,14 +44,14 @@ exports.getNextIterator = def(scope, yy):
 		for (i in arr):
 			arr[i] = alphabet[arr[i]]
 		test = arr.join('')
-	return yy.Id.create('_' + test)
+	return new yy.Id('_' + test)
 
 exports.getNextLength = def(scope, yy):
 	num = 1
 	test = '_len'
 	while(scope.exists(test) == true):
 		test = '_len' + (num + 1)
-	return yy.Id.create(test)
+	return new yy.Id(test)
 
 exports.buildIterator = def(series, index, scope, yy):
 	out = ''

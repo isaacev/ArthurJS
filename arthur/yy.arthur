@@ -11,7 +11,7 @@ exports.yy = {
 		.type = 'root'
 		.compile = def(opts = {}):
 			out = ''
-			scope = Scope().create
+			scope = new Scope()
 
 			scope.indent()
 			if (opts.bare == true):
@@ -296,6 +296,10 @@ exports.yy = {
 					out = a.write(scope) + '--'
 				else:
 					out = '--' + a.write(scope)
+			elseif (relation == '?'):
+				out = '(typeof ' + a.write(scope) + ' !== \'undefined\' && ' + a.write(scope) + ' !== null)'
+			elseif (relation == 'new'):
+				out = 'new ' + a.write(scope)
 			else:
 				out = a.write(scope) + ' ' + relation + ' ' + b.write(scope)
 
