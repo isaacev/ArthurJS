@@ -105,7 +105,7 @@ exports.grammar = {
 
 		If = [
 			['IfBlock', '$$ = $1;', {
-				prec: 'THEN'
+				prec = 'THEN'
 			}]
 			['IfBlock ElseIfBlocks', '$1.addElseIfs($2);']
 			['IfBlock ElseBlock', '$1.addElse($2);']
@@ -113,8 +113,9 @@ exports.grammar = {
 		]
 
 		IfBlock = [
-			['IF ( Value )  = Block', '$$ = new yy.If("true", $3, $6);']
-			['IF ( Comparison )  = Block', '$$ = new yy.If("comparison", $3, $6);']
+			['IF ( Value ) : Block', '$$ = new yy.If("true", $3, $6);']
+			['IF ( Operation ) : Block', '$$ = new yy.If("operation");']
+			['IF ( Comparison ) : Block', '$$ = new yy.If("comparison", $3, $6);']
 		]
 
 		ElseIfBlocks = [
@@ -123,21 +124,22 @@ exports.grammar = {
 		]
 
 		ElseIf = [
-			['ELSEIF ( Value )  = Block', '$$ = {flag: "true", exp: $3, chunks: $6};']
-			['ELSEIF ( Comparison )  = Block', '$$ = {flag: "comparison", exp: $3, chunks: $6};']
+			['ELSEIF ( Value ) : Block', '$$ = {flag: "true", exp: $3, chunks: $6};']
+			['ELSEIF ( Operation ) : Block', '$$ = {flag: "operation", exp: $3, chunks: $6};']
+			['ELSEIF ( Comparison ) : Block', '$$ = {flag: "comparison", exp: $3, chunks: $6};']
 		]
 
 		ElseBlock = [
-			['ELSE  = Block', '$$ = $3;']
+			['ELSE : Block', '$$ = $3;']
 		]
 
 		For = [
-			['FOR ( Identifier IN Iterable )  = Block', '$$ = new yy.For($3, $5, false, $8);']
-			['FOR ( Identifier IN Iterable AS Identifier )  = Block', '$$ = new yy.For($3, $5, $7, $10);']
+			['FOR ( Identifier IN Iterable ) : Block', '$$ = new yy.For($3, $5, false, $8);']
+			['FOR ( Identifier IN Iterable AS Identifier ) : Block', '$$ = new yy.For($3, $5, $7, $10);']
 		]
 
 		While = [
-			['WHILE ( Comparison )  = Block', '$$ = new yy.While($3, $6);']
+			['WHILE ( Comparison ) : Block', '$$ = new yy.While($3, $6);']
 		]
 
 		Iterable = [
