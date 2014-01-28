@@ -32,11 +32,21 @@ Gulp.task('validate', function () {
 		.pipe(GulpValidate());
 });
 
+
 // runs `build.js` which concatenates all raw JavaScript
 // source files, wrapping them in a sercret sauce that
 // allows them to run in Node.js or client-side seamlessly
 Gulp.task('build', function () {
 	Build();
+});
+
+
+// different than `build`, `mayday` uses the previously generated
+// JavaScript files to creat the parser. this is in case the latest
+// files get malformed and therefore the parser becomes malformed
+// making it impossible to correct the files
+Gulp.task('mayday', function () {
+	Build(true);
 });
 
 
