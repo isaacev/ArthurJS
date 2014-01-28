@@ -21,29 +21,30 @@ function saveFile(path, data) {
 
 var source = {};
 var loaded = 0;
+var hasBeenCorrupted = true;
 
 exports.build = function () {
-	loadFile('./src/lexer.js', function (data) {
+	loadFile((hasBeenCorrupted ? './src/lexer.js' : './bin/seperate/lexer.js'), function (data) {
 		source.lexer = data;
 		run();
 	});
 
-	loadFile('./src/grammar.js', function (data) {
+	loadFile((hasBeenCorrupted ? './src/grammar.js' : './bin/seperate/grammar.js'), function (data) {
 		source.grammar = data;
 		run();
 	});
 
-	loadFile('./src/yy.js', function (data) {
+	loadFile((hasBeenCorrupted ? './src/yy.js' : './bin/seperate/yy.js'), function (data) {
 		source.yy = data;
 		run();
 	});
 
-	loadFile('./src/scope.js', function (data) {
+	loadFile((hasBeenCorrupted ? './src/scope.js' : './bin/seperate/scope.js'), function (data) {
 		source.scope = data;
 		run()
 	});
 
-	loadFile('./src/helpers.js', function (data) {
+	loadFile((hasBeenCorrupted ? './src/helpers.js' : './bin/seperate/helpers.js'), function (data) {
 		source.helpers = data;
 		run();
 	});
@@ -53,7 +54,7 @@ function run() {
 	loaded++;
 
 	if (loaded === 5) {
-		var parser = new Jison.Parser(require('./src/grammar.js').grammar);
+		var parser = new Jison.Parser(require((hasBeenCorrupted ? './src/grammar.js' : './bin/seperate/grammar.js')).grammar);
 		source.parser = parser.generate({
 			moduleType: 'js'
 		});
