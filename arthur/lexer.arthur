@@ -169,7 +169,7 @@ Lexer = def:
 		while (.remaining.length > 0):
 			.index = .index + (check(this, rules.space) || check(this, rules.terminator) || check(this, rules.string) || check(this, rules.number) || check(this, rules.regex) || check(this, rules.comment) || check(this, rules.identifier) || check(this, rules.logicSymbol) || check(this, rules.literalSymbol) || check(this, rules.unexpected))
 
-			.remaining.substr(.index)
+			.remaining = .input.substr(.index)
 		return {
 			tokens = .tokens
 			literals = .literals
