@@ -1,18 +1,24 @@
 var Gulp = require('gulp');
 var GulpUtil = require('gulp-util');
 var GulpArthur = require('gulp-arthur');
+var GulpValidate = require('gulp-jsvalidate');
 var Build = require('./build.js').build;
 
 
 // takes each *.arthur file in `/arthur/` and compiles
 // it to JavaScript, placing the output data inside
-// `/bin/seperate/` directory
+// `/bin/modules/` directory
 Gulp.task('arthur', function () {
+	// Gulp.src('./arthur/*.arthur')
+	// 	.pipe(GulpArthur({
+	// 		bare: true
+	// 	}).on('error', GulpUtil.log))
+	// 	.pipe(Gulp.dest('./bin/modules/'));
 	Gulp.src('./arthur/*.arthur')
 		.pipe(GulpArthur({
 			bare: true
 		}).on('error', GulpUtil.log))
-		.pipe(Gulp.dest('./bin/seperate/'));
+		.pipe(Gulp.dest('./bin/modules/'));
 });
 
 
@@ -22,10 +28,9 @@ Gulp.task('arthur', function () {
 // can be written because the parser is corrupt making
 // it impossible to correct the mistake
 Gulp.task('validate', function () {
-	Gulp.src('./bin/seperate/*.js')
-		.pipe(validate);
+	Gulp.src('./bin/modules/*.js')
+		.pipe(GulpValidate());
 });
-
 
 // runs `build.js` which concatenates all raw JavaScript
 // source files, wrapping them in a sercret sauce that
@@ -42,4 +47,4 @@ Gulp.task('watch', function () {
 	Gulp.watch('./src/**', ['arthur', 'validate', 'build']);
 });
 
-Gulp.task('default', ['build', 'validate', 'arthur']);
+Gulp.task('default', ['arthur', 'validate', 'build']);
