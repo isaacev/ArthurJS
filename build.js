@@ -27,31 +27,32 @@ exports.build = function (hasBeenCorrupted) {
 
 	loadFile((hasBeenCorrupted ? './src/lexer.js' : './bin/modules/lexer.js'), function (data) {
 		source.lexer = data;
-		run();
+		run(hasBeenCorrupted);
 	});
 
 	loadFile((hasBeenCorrupted ? './src/grammar.js' : './bin/modules/grammar.js'), function (data) {
 		source.grammar = data;
-		run();
+		run(hasBeenCorrupted);
 	});
 
 	loadFile((hasBeenCorrupted ? './src/yy.js' : './bin/modules/yy.js'), function (data) {
 		source.yy = data;
-		run();
+		run(hasBeenCorrupted);
 	});
 
 	loadFile((hasBeenCorrupted ? './src/scope.js' : './bin/modules/scope.js'), function (data) {
 		source.scope = data;
-		run()
+		run(hasBeenCorrupted)
 	});
 
 	loadFile((hasBeenCorrupted ? './src/helpers.js' : './bin/modules/helpers.js'), function (data) {
 		source.helpers = data;
-		run();
+		run(hasBeenCorrupted);
 	});
 };
 
 function run(hasBeenCorrupted) {
+	hasBeenCorrupted = hasBeenCorrupted || false;
 	loaded++;
 
 	if (loaded === 5) {
