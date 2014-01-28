@@ -196,7 +196,7 @@ function Lexer() {
 		this.remaining = input;
 	};
 	this.lex = function () {
-		while (this.remaining = this.input.slice(this.index)) {
+		while (this.remaining.length > 0) {
 			// `check` returns `number` or `false`
 			// if nothing recognizes the symbol, it gets passed
 			// to a catch-all `unexpected` which throws an exception
@@ -210,6 +210,8 @@ function Lexer() {
 				check(this, rules.logicSymbol) ||
 				check(this, rules.literalSymbol) ||
 				check(this, rules.unexpected);
+
+			this.remaining = this.input.substr(this.index);
 		}
 
 		return {
