@@ -72,6 +72,10 @@ function run(hasBeenCorrupted) {
 		file += 'parser.yy = exports.yy; return {parse: function (code, opts) {opts = opts || {}; parser.lexer = new exports.lexer(); var root = parser.parse(code + \'\\n\');return root.compile(opts).trim();}};})();';
 		file += 'if(typeof exports!==\'undefined\'&&typeof require!==\'undefined\'){ exports.parse = function () { return Arthur.parse.apply(Arthur,arguments); }; }';
 
+		if (hasBeenCorrupted) {
+			console.log('finished rebuilding arthur.js with basic (0.1) compiler');
+		}
+
 		saveFile('./bin/arthur.js', file);
 	}
 }
