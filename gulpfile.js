@@ -9,14 +9,10 @@ var Build = require('./build.js').build;
 // it to JavaScript, placing the output data inside
 // `/bin/modules/` directory
 Gulp.task('arthur', function () {
-	// Gulp.src('./arthur/*.arthur')
-	// 	.pipe(GulpArthur({
-	// 		bare: true
-	// 	}).on('error', GulpUtil.log))
-	// 	.pipe(Gulp.dest('./bin/modules/'));
 	Gulp.src('./arthur/*.arthur')
 		.pipe(GulpArthur({
-			bare: true
+			bare: true,
+			basic: true
 		}).on('error', GulpUtil.log))
 		.pipe(Gulp.dest('./bin/modules/'));
 });
@@ -37,7 +33,7 @@ Gulp.task('validate', function () {
 // source files, wrapping them in a sercret sauce that
 // allows them to run in Node.js or client-side seamlessly
 Gulp.task('build', function () {
-	Build();
+	Build(false);
 });
 
 
@@ -57,4 +53,11 @@ Gulp.task('watch', function () {
 	Gulp.watch('./src/**', ['arthur', 'validate', 'build']);
 });
 
+
+// the default task
+// builds all the *.arthur files in the arthur directory,
+// saving them into the modules folder. when completed,
+// it validates their JavaScript, checking for malformed
+// code. if the tests pass, it builds them all into a new
+// Arthur compiler
 Gulp.task('default', ['arthur', 'validate', 'build']);
