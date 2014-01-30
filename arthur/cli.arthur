@@ -1,0 +1,61 @@
+Arthur = require('./bin/arthur.js')
+Cli = require('commander')
+Fs = require('fs')
+Path = require('path')
+
+Cli.version(Arthur.VERSION)
+Cli.usage('[src file] [destination file] [options]')
+Cli.option('<src> <dest>', 'default option, alias for --compile')
+Cli.option('-c --compile <src>', 'compiles to JavaScript and save as local *.js file')
+Cli.option('-d --destination <dest>', 'saves compiled file to destination')
+Cli.optino('-p --print', 'print compiled code to terminal')
+CLi.option('-b --bare', 'remove global function wrapper')
+Cli.parse(process.argv)
+
+args = {}
+
+args.src = Cli.args[0] || Cli.compile || false
+args.dest = Cli.args[1] || Cli.destination || false
+args.print = Cli.print || false
+args.bare = Cli.bare || false
+args.help = Cli.help || false
+args.version = Cli.version || false
+
+if (args.src):
+	compile = def (code):
+		console.time('compilation')
+		js = Arthur.parse(code + '\n', {
+			bare = args.bare
+			header = true
+		})
+		console.timeEnd('compilation')
+
+		# determine what to do with compiled JavaScript
+		if (args.dest != false):
+			saveFile(args.dest, js)
+
+			# print code
+			if (args.print == true):
+				console.log(js)
+		else:
+			console.log(js)
+
+	loadFile(args.src, compile)
+else:
+	console.log('Whoops! no source file given')
+
+loadFile = def (path, callback):
+	process = def (err, data):
+		if (err):
+			throw err.toString()
+		else:
+			callback(data)
+	Fs.readFile(path, 'utf8', process)
+
+saveFile = def (path, data):
+	process = def (err):
+		if (err):
+			throw Error('problem saving to ' + path)
+		else:
+			console.log(path, 'successfully saved')
+	Fs.writeFile(path, data, process)
