@@ -176,6 +176,8 @@ Lexer = def:
 		}
 
 exports.lexer = def:
+	tokens = []
+	literals = []
 	scanner = new Lexer()
 	i = -1
 
