@@ -50,7 +50,7 @@ Gulp.task('original', function () {
 // when detected, compiles the new file and
 // builds full `arthur.js`
 Gulp.task('watch', function () {
-	Gulp.watch('./src/**', ['arthur', 'validate', 'build']);
+	Gulp.watch('./arthur/*.arthur', ['arthur', 'validate', 'build']);
 });
 
 
