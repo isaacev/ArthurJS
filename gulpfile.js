@@ -37,11 +37,11 @@ Gulp.task('build', function () {
 });
 
 
-// different than `build`, `mayday` uses the previously generated
+// different than `build`, `original` uses the previously generated
 // JavaScript files to creat the parser. this is in case the latest
 // files get malformed and therefore the parser becomes malformed
 // making it impossible to correct the files
-Gulp.task('mayday', function () {
+Gulp.task('original', function () {
 	Build(true);
 });
 
