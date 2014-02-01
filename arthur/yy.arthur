@@ -198,6 +198,25 @@ exports.yy = {
 
 			return out + tab(scope) + '}'
 
+	Switch = def(test, cases):
+		.type = 'switch'
+		.write = def (scope):
+			out = ''
+			if (test == false):
+				out = 'switch (false) {\n'
+			else:
+				out = 'switch (' + test.write(scope) + ') {\n'
+
+			scope.indentTemp()
+			for (i in cases as current):
+				out = out + tab(scope) + 'case ' + current.test.write(scope) + ':\n'
+				scope.indentTemp()
+				out = out + writeBlock(scope, current.chunks)
+				scope.dedentTemp()
+			scope.indentTemp()
+
+			return out + tab(scope) + '}'
+
 	Id = def(raw):
 		.type = 'identifier'
 		.write = def:

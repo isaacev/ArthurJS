@@ -125,7 +125,7 @@ rules = {
 
 WHITESPACE = ['TERMINATOR', 'IND', 'DED']
 RESERVED_AR = ['def', 'as', 'elseif']
-RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'while', 'in', 'typeof', 'instanceof', 'break', 'throw', 'new']
+RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'while', 'in', 'typeof', 'instanceof', 'break', 'throw', 'new', 'switch', 'case', 'default']
 
 check = def(lex, rule):
 	match = rule[0].exec(lex.remaining)

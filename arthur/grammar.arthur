@@ -28,6 +28,7 @@ exports.grammar = {
 			['If', '$$ = $1;']
 			['For', '$$ = $1;']
 			['While', '$$ = $1;']
+			['Switch', '$$ = $1;']
 		]
 
 		Statement = [
@@ -140,6 +141,21 @@ exports.grammar = {
 
 		While = [
 			['WHILE ( Comparison ) : Block', '$$ = new yy.While($3, $6);']
+		]
+
+		Switch = [
+			['SWITCH : TERMINATOR IND Cases DED', '$$ = new yy.Switch(false, $5);']
+			['SWITCH ( Value ) : TERMINATOR IND Cases DED', '$$ = new yy.Switch($3, $8);']
+		]
+
+		Cases = [
+			['Case', '$$ = [$1];']
+			['Cases TERMINATOR Case', '$1.push($3);']
+			'Cases TERMINATOR'
+		]
+
+		Case = [
+			['CASE ( Value ) : Block', '$$ = {test: $3, chunks: $6};']
 		]
 
 		Iterable = [
