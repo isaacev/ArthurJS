@@ -108,9 +108,9 @@ exports.grammar = {
 			['IfBlock', '$$ = $1;', {
 				prec = 'THEN'
 			}]
-			['IfBlock ElseIfBlocks', '$1.addElseIfs($2);']
-			['IfBlock ElseBlock', '$1.addElse($2);']
-			['IfBlock ElseIfBlocks ElseBlock', '$1.addElseIfs($2).addElse($3);']
+			['IfBlock ElseIfBlocks', '$$ = $1.addElseIfs($2);']
+			['IfBlock ElseBlock', '$$ = $1.addElse($2);']
+			['IfBlock ElseIfBlocks ElseBlock', '$$ = $1.addElseIfs($2).addElse($3);']
 		]
 
 		IfBlock = [
