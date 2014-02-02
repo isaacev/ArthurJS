@@ -3,8 +3,9 @@ alphabet = 'abcdefghijklmnopqrstuvwxyz'
 exports.tab = def(scope):
 	level = scope.getLevel() + scope.getTemp()
 	out = ''
-	for (i in level):
+	while (0 < level):
 		out = out + '\t'
+		level--
 	return out
 
 exports.writeBlock = def(scope, block, iterator = false, defaults = []):
