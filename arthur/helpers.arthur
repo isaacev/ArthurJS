@@ -8,26 +8,26 @@ exports.tab = def(scope):
 		level--
 	return out
 
-exports.writeBlock = def(scope, block, iterator = false, defaults = []):
+exports.writeBlock = def(scope, block, iterator, defaults = []):
 	out = ''
 	noSemiColon = ['if', 'for', 'while', 'try', 'switch']
 	hasSemiNewline = /.*\;\n+$/
 	hasSemi = /.*\;$/
 	for (i in block as line):
 		if (line typeof 'object'):
-			line = line.write(scope)
+			str = line.write(scope)
 			if (noSemiColon.indexOf(line.type) == -1):
-				if (hasSemiNewline.test(line)):
+				if (hasSemiNewline.test(str)):
 					ending = ''
-				elseif (hasSemi.test(line)):
+				elseif (hasSemi.test(str)):
 					ending = '\n'
 				else:
 					ending = ';\n'
 			else:
 				ending = '\n'
-		out = out + exports.tab(scope) + line + ending
+		out = out + exports.tab(scope) + str + ending
 		if (iterator?):
-			iterator(line, ending)
+			iterator(str, ending)
 	return out
 
 exports.getNextIterator = def(scope, yy):
