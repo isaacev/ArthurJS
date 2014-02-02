@@ -74,6 +74,8 @@ function run(hasBeenCorrupted) {
 
 		if (hasBeenCorrupted) {
 			console.log('finished rebuilding arthur.js with basic (0.1) compiler');
+			saveFile('./src/arthurBasic.js', file);
+			return;
 		}
 
 		saveFile('./bin/arthur.js', file);
