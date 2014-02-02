@@ -32,19 +32,22 @@ exports.yy = {
 			if (opts.bare != true):
 				out = '(function() {\n' + variables + out.replace(/\s+$/, '\n') + tab(scope) + '}).call(this);'
 			else:
-				out = out.replace(/s+$/, '')
+				out = variables + '\n' + out.replace(/s+$/, '')
 
 			if (opts.header == true):
 				out = '// Written by Arthur v0.1.0\n\n' + out
 
 			return out
 
+	Assignment = def(identifier, value):
 		.type = 'assignment'
 		.write = def(scope):
+			if (identifier.write(scope).split('.').length == 1 && identifier.type == 'identifier'):
 				scope.useVar(identifier)
 
+			return identifier.write(scope) + ' = ' + value.write(scope)
 
-	Def = def(arg, block):
+	Def = def(args, block):
 		.type = 'def'
 		.write = def(scope):
 			scope.indent()
@@ -133,7 +136,7 @@ exports.yy = {
 					out = out + ' else if (' + current.exp.write(scope) + ') {\n'
 
 				scope.indentTemp()
-				out = out + writeBLock(scope, current.chunks)
+				out = out + writeBlock(scope, current.chunks)
 				scope.dedentTemp()
 
 				out = out + tab(scope) + '}'
@@ -205,7 +208,7 @@ exports.yy = {
 		.write = def:
 			return raw.toString()
 
-	Comparison = def(relation, a, b):
+	Comparison = def(a, relation, b):
 		.type = 'comparison'
 		.write = def(scope):
 			out = ''
