@@ -69,20 +69,11 @@ exports.yy = {
 	Assignment: function (identifier, value) {
 		this.type = 'assignment';
 		this.write = function (scope) {
-			if (value.type === 'class') {
-				value = value.write(scope, {
-					name: identifier.write(scope)
-				});
-			} else {
-				value = value.write(scope);
-			}
-
-			var start = '';
 			if (identifier.write(scope).split('.').length === 1 && identifier.type === 'identifier') {
 				scope.useVar(identifier);
 			}
 
-			return start + identifier.write(scope) + ' = ' + value;
+			return identifier.write(scope) + ' = ' + value.write(scope);
 		};
 	},
 

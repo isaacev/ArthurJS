@@ -3,7 +3,6 @@ Scope = require('./scope.js').Scope
 
 tab = Helpers.tab
 writeBlock = Helpers.writeBlock
-writeLogic = Helpers.writeLogic
 buildIterator = Helpers.buildIterator
 
 exports.yy = {
@@ -40,23 +39,10 @@ exports.yy = {
 
 			return out
 
-	Assignment = def(optProperty, identifier, value):
 		.type = 'assignment'
 		.write = def(scope):
-			if (value.type == 'class'):
-				value = value.write(scope, {
-					name = identifier.write(scope)
-				})
-			else:
-				vlaue = value.write(scope)
-
-			start = ''
-			if (optProperty == true):
-				start = 'this.'
-			elseif (identifier.write(scope).split('.').length == 1 && identifier.type == 'identifier'):
 				scope.useVar(identifier)
 
-			return start + identifier.write(scope) + ' = ' + value
 
 	Def = def(arg, block):
 		.type = 'def'
@@ -130,8 +116,6 @@ exports.yy = {
 
 			if (flag == 'true'):
 				out = out + 'if (' + exp.write(scope) + ' === true) {\n'
-			elseif (flag == 'comparison'):
-				out = out + 'if (' + writeLogic(exp, scope) + ') {\n'
 			else:
 				out = out + 'if (' + exp.write(scope) + ') {\n'
 
@@ -144,8 +128,6 @@ exports.yy = {
 			for (i in elseIfObjs as current):
 				if (current.flag == 'true'):
 					out = out + ' else if (' + current.exp.write(scope) + ' === true) {\n'
-				elseif (current.flag == 'comparison'):
-					out = out + ' else if (' + writeLogic(current.exp, scope) + ') {\n'
 				else:
 					out = out + ' else if (' + current.exp.write(scope) + ') {\n'
 
@@ -190,7 +172,7 @@ exports.yy = {
 	While = def(comparisons, block):
 		.type = 'while'
 		.write = def(scope):
-			out = 'while (' + writeLogic(comparisons, scope) + ') {\n'
+			out = 'while (' + comparisons.write(scope) + ') {\n'
 
 			scope.indentTemp()
 			out = out + writeBlock(scope, block)
@@ -228,24 +210,23 @@ exports.yy = {
 			out = ''
 
 			if (relation == '?'):
-				out = out + '(typeof ' + a.write(scope) + ' !== \'undefined\' && ' + a.write(scope) + ' !== null)'
+				out = '(typeof ' + a.write(scope) + ' !== \'undefined\' && ' + a.write(scope) + ' !== null)'
 			elseif (relation == 'typeof'):
-				out = out + '(typeof ' + a.write(scope) + ' === ' + b.write(scope) + ')'
+				out = '(typeof ' + a.write(scope) + ' === ' + b.write(scope) + ')'
 			elseif (relation == '!typeof'):
-				out = out + '(typeof ' + a.write(scope) + ' !== ' + b.write(scope) + ')'
+				out = '(typeof ' + a.write(scope) + ' !== ' + b.write(scope) + ')'
 			elseif (relation == 'instanceof'):
-				out = out + '(' + a.write(scope) + ' instanceof ' + b.write(scope) + ')'
+				out = '(' + a.write(scope) + ' instanceof ' + b.write(scope) + ')'
 			elseif (relation == '!instanceof'):
-				out = out + '!(' + a.write(scope) + ' instanceof ' + b.write(scope) + ')'
+				out = '!(' + a.write(scope) + ' instanceof ' + b.write(scope) + ')'
 			else:
 				if (relation == '!='):
 					relation = '!=='
 				elseif (relation == '=='):
 					relation = '==='
 
-				out = out + a.write(scope) + ' '
-				out = out + relation + ' '
-				out = out + b.write(scope)
+				#console.log(scope.scope)
+				out = a.write(scope) + ' ' + relation + ' ' + b.write(scope)
 
 			return out
 

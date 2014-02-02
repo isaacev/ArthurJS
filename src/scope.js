@@ -140,7 +140,6 @@ exports.Scope = function () {
 		opts = opts || {};
 
 		scope.push({
-			class: (opts.class ? opts.class : false),
 			vars: [],
 			uses: []
 		});
