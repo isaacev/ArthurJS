@@ -152,6 +152,16 @@ exports.yy = {
 
 			return out
 
+		.addElseIfs = def (elseIfs):
+			elseIfObjs = elseIfs
+			return this
+
+		.addElse = def (chunks):
+			elseObj = {
+				chunks = chunks
+			}
+			return this
+
 	For = def(identifier, iterable, alias, block):
 		.type = 'for'
 		.write = def(scope):
