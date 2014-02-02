@@ -26,7 +26,10 @@ exports.Scope = function () {
 	};
 
 	this.useVar = function (identifier) {
-		identifier = identifier.write(scope).split('.')[0];
+		if (typeof identifier !== 'string') {
+			identifier = identifier.write(scope);
+		}
+		identifier = identifier.split('.')[0];
 
 		var i, last = scope[scope.length - 1].uses;
 
@@ -49,6 +52,7 @@ exports.Scope = function () {
 		}
 
 		// variable hasn't been declared so declare it
+		this.declareVar(identifier);
 		scope[scope.length - 1].vars.push(identifier);
 	};
 
