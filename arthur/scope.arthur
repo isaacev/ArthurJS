@@ -1,7 +1,6 @@
 exports.Scope = def:
 	scope = []
 	temp = 0
-	extensions = {}
 
 	.printLocal = def:
 		local = scope[scope.length - 1].vars
@@ -19,42 +18,27 @@ exports.Scope = def:
 			return ''
 
 	.useVar = def(identifier):
-		last = scope[scope.length - 1].uses
-		for (i in last as variable):
-			if (variable[1] != false && variable[1] == identifier):
-				return
-			if (variable[0] == identifier):
-				return
+		# convert identifier to string
+		if (identifier !typeof 'string'):
+			identifier = identifier.write(this)
+
 		for (i in scope as variable):
 			if (variable.vars.indexOf(identifier) != -1):
 				return
+
+		# declare variable
+		.declareVar(identifier)
+
+	.declareVar = def (identifier):
+		#convert identifier to string
+		if (identifier !typeof 'string'):
+			identifier = identifier.write(this)
+
 		scope[scope.length - 1].vars.push(identifier)
-
-	.use = def(string, alias = false):
-		last = scope[scope.length - 1].uses
-		for (i in last as used):
-			if (used[0] == string):
-				return
-		last.push([string, alias])
-
-	.printUses = def(aliases = false):
-		last = scope[scope.length - 1].uses
-		out = ''
-		if (last.length > 0):
-			for (i in last as used):
-				if (i > 0):
-					out = out + ', '
-				if (aliases && used[1]):
-					out = out + used[1]
-				else:
-					out = out + used[0]
-			if (aliases == false):
-				out = ', [' + out + ']'
-		return out
 
 	.exists = def(identifier):
 		if (identifier !typeof 'string'):
-			identifier = identifier.write(scope)
+			identifier = identifier.write(this)
 		for (i in scope as level):
 			if (level.vars.indexOf(identifier) != -1):
 				return true
@@ -62,9 +46,7 @@ exports.Scope = def:
 
 	.indent = def(opts = {}):
 		scope.push({
-			class = false
 			vars = []
-			uses = []
 		})
 
 	.dedent = def:
