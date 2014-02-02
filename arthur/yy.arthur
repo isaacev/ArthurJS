@@ -52,6 +52,7 @@ exports.yy = {
 			argString = ''
 			defaults = []
 			for (i in args as arg):
+				scope.declareVar(arg)
 				if ((args.length - 1) == i):
 					ending = ''
 				else:
