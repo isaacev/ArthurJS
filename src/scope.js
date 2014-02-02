@@ -53,6 +53,13 @@ exports.Scope = function () {
 
 		// variable hasn't been declared so declare it
 		this.declareVar(identifier);
+	};
+
+	this.declareVar = function (identifier) {
+		if (typeof identifier !== 'string') {
+			identifier = identifier.write(scope);
+		}
+
 		scope[scope.length - 1].vars.push(identifier);
 	};
 
