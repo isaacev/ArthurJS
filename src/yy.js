@@ -430,6 +430,10 @@ exports.yy = {
 
 			return [identifier, defaults];
 		};
+
+		this.writeName = function (scope) {
+			return identifier.write(scope);
+		};
 	},
 
 	Literal: function (type, raw) {
