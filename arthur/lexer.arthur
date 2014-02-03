@@ -96,7 +96,7 @@ rules = {
 		def (raw, lex, modify):
 			pos.col = pos.col + raw.length
 
-			modify(raw.substr(1).substr(0, raw.length - 1))
+			modify(raw.substr(1).substr(0, raw.length - 2))
 			return 'STRING'
 	]
 
