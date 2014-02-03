@@ -45,14 +45,11 @@ exports.yy = {
 				scope.indentTemp();
 			}
 
-			var usesArgs = scope.printUses();
-			var usesTails = scope.printUses(true);
-
 			scope.dedent();
 
 			// optionally wrap file in function wrapper and remove unnecessary newlines from end
 			if (opts.bare !== true) {
-				out = '(function(' + usesTails + ') {\n' + variables + out.replace(/\s+$/, '\n') + tab(scope) + '}).call(this' + usesArgs + ');';
+				out = '(function() {\n' + variables + out.replace(/\s+$/, '\n') + tab(scope) + '}).call(this);';
 			} else {
 				out = variables + '\n' + out.replace(/\s+$/, '');
 			}
