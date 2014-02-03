@@ -87,7 +87,7 @@ exports.yy = {
 			for (var i = 0, length = args.length; i < length; i++) {
 				ending = (length - 1 === i) ? '' : ', ';
 
-				scope.declareVar(args[i].writeName(scope));
+				scope.declareVar(args[i].writeName(scope), true);
 				arg = args[i].write(scope, defaults);
 				defaults = arg[1];
 				argString += arg[0] + ending;

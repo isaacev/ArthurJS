@@ -25,16 +25,21 @@ exports.Scope = def:
 		for (i in scope as variable):
 			if (variable.vars.indexOf(identifier) != -1):
 				return
+			elseif (variable.scope.indexOf(identifier) != -1):
+				return
 
 		# declare variable
 		.declareVar(identifier)
 
-	.declareVar = def (identifier):
+	.declareVar = def (identifier, hidden):
 		#convert identifier to string
 		if (identifier !typeof 'string'):
 			identifier = identifier.write(this)
 
-		scope[scope.length - 1].vars.push(identifier)
+		if (hidden == true):
+			scope[scope.length - 1].scope.push(identifier)
+		else:
+			scope[scope.length - 1].vars.push(identifier)
 
 	.exists = def(identifier):
 		if (identifier !typeof 'string'):
@@ -47,6 +52,7 @@ exports.Scope = def:
 	.indent = def(opts = {}):
 		scope.push({
 			vars = []
+			scope = []
 		})
 
 	.dedent = def:

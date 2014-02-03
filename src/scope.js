@@ -29,38 +29,28 @@ exports.Scope = function () {
 		if (typeof identifier !== 'string') {
 			identifier = identifier.write(scope);
 		}
-		identifier = identifier.split('.')[0];
 
-		var i, last = scope[scope.length - 1].uses;
-
-		for (i in last) {
-			// check if variable is a used global
-			if (last[i][1] !== false && last[i][1] === identifier) {
-				// variable has local alias
-				return;
-			} else if (last[i][0] === identifier) {
-				// variable has no alias
-				return;
-			}
-		}
-
-		for (i in scope) {
-			// check if variable has already been var'ed
+		for (var i in scope) {
 			if (scope[i].vars.indexOf(identifier) !== -1) {
 				return;
+			} else if (scope[i].scope.indexOf(identifier) !== -1) {
+				return;
 			}
 		}
 
-		// variable hasn't been declared so declare it
 		this.declareVar(identifier);
 	};
 
-	this.declareVar = function (identifier) {
+	this.declareVar = function (identifier, hidden) {
 		if (typeof identifier !== 'string') {
 			identifier = identifier.write(scope);
 		}
 
-		scope[scope.length - 1].vars.push(identifier);
+		if (hidden === true) {
+			scope[scope.length - 1].scope.push(identifier);
+		} else {
+			scope[scope.length - 1].vars.push(identifier);
+		}
 	};
 
 	this.use = function (string, alias) {
@@ -152,7 +142,7 @@ exports.Scope = function () {
 
 		scope.push({
 			vars: [],
-			uses: []
+			scope: []
 		});
 	};
 
