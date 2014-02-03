@@ -110,6 +110,11 @@ exports.yy = {
 		.write = def:
 			return 'break;'
 
+	Comment = def(raw):
+		.type = 'comment'
+		.write = def (scope):
+			return '// ' + raw
+
 	If = def(flag, exp, chunks):
 		elseIfObjs = []
 		elseObj = false
