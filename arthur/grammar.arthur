@@ -26,6 +26,7 @@ exports.grammar = {
 			['Assignment', '$$ = $1;']
 			['Def', '$$ = $1;']
 			['If', '$$ = $1;']
+			['Try', '$$ = $1;']
 			['For', '$$ = $1;']
 			['While', '$$ = $1;']
 			['Switch', '$$ = $1;']
@@ -132,6 +133,27 @@ exports.grammar = {
 
 		ElseBlock = [
 			['ELSE : Block', '$$ = $3;']
+		]
+
+		Try = [
+			['TryBlock', '$$ = $1;', {
+				prec = 'DO'
+			}]
+			['TryBlock CatchBlock', '$$ = $1.addCatch($2);']
+			['TryBlock FinallyBlock', '$$ = $1.addCatch($3);']
+			['TryBlock CatchBlock FinallyBlock', '$$ = $1.addCatch($2).addFinally($3);']
+		]
+
+		TryBlock = [
+			['TRY : Block', '$$ = new yy.Try($3);']
+		]
+
+		CatchBlock = [
+			['CATCH ( Identifier ) : Block', '$$ = {id: $3, block: $6};']
+		]
+
+		FinallyBlock = [
+			['FINALLY : Block', '$$ = $3;']
 		]
 
 		For = [
@@ -252,6 +274,7 @@ exports.grammar = {
 	operators = [
 		['nonassoc', 'ELSE', 'START', 'ROOT']
 		['nonassoc', 'THEN']
+		['nonassoc', 'DO']
 		['left', 'LOGIC']
 		['left', '+', '-']
 		['left', 'MATH']

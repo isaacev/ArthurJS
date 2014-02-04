@@ -167,6 +167,43 @@ exports.yy = {
 			}
 			return this
 
+	Try = def (chunks):
+		catchBlock = false
+		finallyBlock = false
+
+		.type = 'try'
+		.write = def (scope):
+			out = 'try {\n'
+			scope.indentTemp()
+			out = out + writeBlock(scope, chunks)
+			scope.dedentTemp()
+			out = out + tab(scope) + '}'
+
+			if (catchBlock != false):
+				out = out + ' catch (' + catchBlock.id.write(scope) + ') {\n'
+				scope.declareVar(catchBlock.id, false)
+				scope.indentTemp()
+				out = out + writeBlock(scope, catchBlock.block)
+				scope.dedentTemp()
+				out = out + tab(scope) + '}'
+
+			if (finallyBlock != false):
+				out = out + ' finally {\n'
+				scope.indentTemp()
+				out = out + writeBlock(scope, finallyBlock)
+				scope.dedentTemp()
+				out = out + tab(scope) + '}'
+
+			return out
+
+		.addCatch = def (obj):
+			catchBlock = obj
+			return this
+
+		.addFinally = def (block):
+			finallyBlock = block
+			return this
+
 	For = def(identifier, iterable, alias, block):
 		.type = 'for'
 		.write = def(scope):

@@ -50,7 +50,8 @@ rules = {
 			pos.col = pos.col + raw.length
 
 			if ((RESERVED_AR.indexOf(raw) > -1) || (RESERVED_JS.indexOf(raw) > -1)):
-				if (((raw == 'else') || (raw == 'elseif')) && (lex.tokens[lex.tokens.length - 1] == 'TERMINATOR')):
+				removePrevTerminator = ['else', 'elseif', 'catch', 'finally']
+				if ((removePrevTerminator.indexOf(raw) != -1) && (lex.tokens[lex.tokens.length - 1] == 'TERMINATOR')):
 					lex.tokens.pop()
 					lex.literals.pop()
 
@@ -125,7 +126,7 @@ rules = {
 
 WHITESPACE = ['TERMINATOR', 'IND', 'DED']
 RESERVED_AR = ['def', 'as', 'elseif']
-RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'while', 'in', 'typeof', 'instanceof', 'break', 'throw', 'new', 'switch', 'case', 'default']
+RESERVED_JS = ['true', 'false', 'if', 'else', 'return', 'for', 'while', 'in', 'typeof', 'instanceof', 'break', 'throw', 'new', 'switch', 'case', 'default', 'try', 'catch', 'finally']
 
 check = def(lex, rule):
 	match = rule[0].exec(lex.remaining)
