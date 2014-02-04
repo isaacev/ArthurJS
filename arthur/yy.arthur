@@ -181,7 +181,7 @@ exports.yy = {
 
 			if (catchBlock != false):
 				out = out + ' catch (' + catchBlock.id.write(scope) + ') {\n'
-				scope.declareVar(catchBlock.id, false)
+				scope.declareVar(catchBlock.id, true)
 				scope.indentTemp()
 				out = out + writeBlock(scope, catchBlock.block)
 				scope.dedentTemp()
