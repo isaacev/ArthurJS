@@ -140,7 +140,7 @@ exports.grammar = {
 				prec = 'DO'
 			}]
 			['TryBlock CatchBlock', '$$ = $1.addCatch($2);']
-			['TryBlock FinallyBlock', '$$ = $1.addCatch($3);']
+			['TryBlock FinallyBlock', '$$ = $1.addFinally($3);']
 			['TryBlock CatchBlock FinallyBlock', '$$ = $1.addCatch($2).addFinally($3);']
 		]
 
