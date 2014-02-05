@@ -21,28 +21,31 @@ args.bare = Cli.bare || false
 args.help = Cli.help || false
 args.version = Cli.version || false
 
-if (args.src):
-	compile = def (code):
-		console.time('compilation')
-		js = Arthur.parse(code + '\n', {
-			bare = args.bare
-			header = true
-		})
-		console.timeEnd('compilation')
+try:
+	if (args.src):
+		compile = def (code):
+			console.time('compilation')
+			js = Arthur.parse(code + '\n', {
+				bare = args.bare
+				header = true
+			})
+			console.timeEnd('compilation')
 
-		# determine what to do with compiled JavaScript
-		if (args.dest != false):
-			saveFile(args.dest, js)
+			# determine what to do with compiled JavaScript
+			if (args.dest != false):
+				saveFile(args.dest, js)
 
-			# print code
-			if (args.print == true):
+				# print code
+				if (args.print == true):
+					console.log(js)
+			else:
 				console.log(js)
-		else:
-			console.log(js)
 
-	loadFile(args.src, compile)
-else:
-	console.log('Whoops! no source file given')
+		loadFile(args.src, compile)
+	else:
+		console.log('Whoops! no source file given')
+catch (err):
+	console.log(err.toString())
 
 loadFile = def (path, callback):
 	process = def (err, data):
