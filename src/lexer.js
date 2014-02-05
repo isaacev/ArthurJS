@@ -149,7 +149,7 @@ var rules = {
 
 var WHITESPACE = ['TERMINATOR', 'IND', 'DED'];
 var RESERVED_AR = ['def', 'as', 'elseif'];
-var RESERVED_JS = ['true', 'false', 'null', 'if', 'else', 'return', 'for', 'while', 'in', 'typeof', 'instanceof', 'break', 'throw', 'new'];
+var RESERVED_JS = ['true', 'false', 'null', 'if', 'else', 'return', 'for', 'while', 'in', 'typeof', 'instanceof', 'break', 'throw', 'new', 'try', 'catch', 'finally'];
 
 // `check` inspects a specific rule to see if it matches
 // the remainder of the string. if the rule does, `check`
@@ -249,5 +249,5 @@ exports.lexer = function () {
 			this.yytext = literals[i];
 		}
 		return tokens[i];
-	}
+	};
 };
