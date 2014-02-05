@@ -64,7 +64,7 @@ function run(hasBeenCorrupted) {
 		var file = 'var Arthur = (function(){var exports = {};function require(path) {switch(path) {case \'./helpers.js\':return exports;break;case \'./scope.js\':return exports;break;}}';
 
 		file += 'var helpers = (function(exports, require) {' + source.helpers + '})(exports, require);';
-		file += 'var yy = (function(exports, require) {' + source.scope + '})(exports, require);';
+		file += 'var scope = (function(exports, require) {' + source.scope + '})(exports, require);';
 		file += 'var lexer = (function(exports, require) {' + source.lexer + '})(exports, require);';
 		file += 'var yy = (function(exports, require) {' + source.yy + '})(exports, require);';
 		file += source.parser;
