@@ -258,43 +258,6 @@ exports.yy = {
 		};
 	},
 
-	Try: function (tryBlock, catchId, catchBlock, finallyBlock) {
-		this.type = 'try';
-		this.write = function (scope) {
-			var out = '';
-
-			out = tab(scope) + 'try {\n';
-
-			scope.indentTemp();
-			out += writeBlock(scope, tryBlock);
-			scope.dedentTemp();
-
-			out += tab(scope) + '}';
-
-			out += ' catch (_err) {\n';
-
-			scope.indentTemp();
-			scope.useVar(catchId);
-			out += tab(scope) + catchId.write(scope) + ' = _err;\n';
-			out += writeBlock(scope, catchBlock);
-			scope.dedentTemp();
-
-			out += tab(scope) + '}';
-
-			if (finallyBlock !== false) {
-				out += ' finally {\n';
-
-				scope.indentTemp();
-				out += writeBlock(scope, finallyBlock);
-				scope.dedentTemp();
-
-				out += tab(scope) + '}';
-			}
-
-			return out;
-		};
-	},
-
 	Switch: function (value, cases) {
 		this.type = 'switch';
 		this.write = function (scope) {
