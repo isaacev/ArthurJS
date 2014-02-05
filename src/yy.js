@@ -215,6 +215,49 @@ exports.yy = {
 		};
 	},
 
+	Try: function (chunks) {
+		var catchBlock = false;
+		var finallyBlock = false;
+
+		this.type = 'try';
+		this.write = function (scope) {
+			var out = 'try {\n';
+			scope.indentTemp();
+			out += writeBlock(scope, chunks);
+			scope.dedentTemp();
+			out += tab(scope) + '}';
+
+			if (catchBlock !== false) {
+				out += ' catch (' + catchBlock.id.write(scope) + ') {\n';
+				scope.declareVar(catchBlock.id, true);
+				scope.indentTemp();
+				out += writeBlock(scope, catchBlock.block);
+				scope.dedentTemp();
+				out += tab(scope) + '}';
+			}
+
+			if (finallyBlock !== false) {
+				out += ' finally {\n';
+				scope.indentTemp();
+				out += writeBlock(scope, finallyBlock);
+				scope.dedentTemp();
+				out += tab(scope) + '}';
+			}
+
+			return out;
+		};
+
+		this.addCatch = function (obj) {
+			catchBlock = obj;
+			return this;
+		};
+
+		this.addFinally = function (block) {
+			finallyBlock = block;
+			return this;
+		};
+	},
+
 	Try: function (tryBlock, catchId, catchBlock, finallyBlock) {
 		this.type = 'try';
 		this.write = function (scope) {

@@ -64,7 +64,8 @@ var rules = {
 				// between IF blocks and ELSE blocks. I needed to build my own because
 				// Lex.js didn't offer the granular support I required. anyway,
 				// enough rambling: here it is, stupid thing
-				if ((raw === 'else' || raw === 'elseif') && lex.tokens[lex.tokens.length - 1] === 'TERMINATOR') {
+				var removedPrevTerminator = ['else', 'elseif', 'catch', 'finally'];
+				if ((removedPrevTerminator.indexOf(raw) !== -1) && lex.tokens[lex.tokens.length - 1] === 'TERMINATOR') {
 					lex.tokens.pop();
 					lex.literals.pop();
 				}
