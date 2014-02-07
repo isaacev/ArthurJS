@@ -69,7 +69,7 @@ function run(hasBeenCorrupted) {
 		file += 'var yy = (function(exports, require) {' + source.yy + '})(exports, require);';
 		file += source.parser;
 
-		file += 'parser.yy = exports.yy; return {parse: function (code, opts) {opts = opts || {}; parser.lexer = new exports.lexer(); var root = parser.parse(code + \'\\n\');return root.compile(opts).trim();}};})();';
+		file += 'parser.yy = exports.yy; return {parse: function (code, opts) {opts = opts || {}; parser.lexer = new exports.lexer(); var root = parser.parse(code + \'\\n\');return root.compile(opts).trim();},run: function (code, opts) {opts = opts || {};parser.lexer = new exports.lexer();var root = parser.parse(code + \'\\n\');return eval(root.compile(opts).trim());}};})();';
 		file += 'if(typeof exports!==\'undefined\'&&typeof require!==\'undefined\'){ exports.parse = function () { return Arthur.parse.apply(Arthur,arguments); }; }';
 
 		if (hasBeenCorrupted) {
