@@ -1,9 +1,23 @@
-var assert = require("assert");
+var Arthur = require('../bin/arthur.js');
+var Assert = require('assert');
+
+function compile (code) {
+	return Arthur.parse(code, {
+		bare: true,
+		header: false
+	});
+}
+
 describe('Array', function () {
-	describe('#indexOf()', function () {
-		it('should return -1 when the value is not present', function () {
-			assert.equal(-1, [1, 2, 3].indexOf(5));
-			assert.equal(-1, [1, 2, 3].indexOf(0));
+	describe('#block', function () {
+		it('should return formatted data', function () {
+			Assert.equal('[\n\t\'foo\',\n\t\'bar\',\n\t\'baz\'\n];', compile('[\n\t\'foo\'\n\t\'bar\'\n\t\'baz\'\n]'))
+		});
+	});
+
+	describe('#inline', function () {
+		it('should return non-formatted data', function () {
+			Assert.equal();
 		});
 	});
 });
