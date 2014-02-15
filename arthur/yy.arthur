@@ -49,7 +49,7 @@ exports.yy = {
 
 	Def = def(args, block):
 		.type = 'def'
-		.write = def(scope):
+		.write = def(scope, insulate = false):
 			scope.indent()
 
 			argString = ''
@@ -93,9 +93,14 @@ exports.yy = {
 			out = out + tab(scope) + '}'
 
 			if (lines == 0):
-				return 'function (' + argString + ') {}'
+				out = 'function (' + argString + ') {}'
 
-			return 'function (' + argString + ') {\n' + variables + defaultString + out
+			out = 'function (' + argString + ') {\n' + variables + defaultString + out
+
+			if (insulate == true):
+				return '(' + out + ')'
+			else:
+				return out
 
 	Return = def(expression):
 		.type = 'return'
@@ -286,7 +291,7 @@ exports.yy = {
 
 			return out
 
-	Parameter = def(identifier, defaultValue):
+	Parameter = def(identifier, defaultValue = false):
 		.type = 'parameter'
 		.write = def(scope, defaults = []):
 			identifier = identifier.write(scope)
@@ -325,6 +330,8 @@ exports.yy = {
 			return out
 
 	Call = def(value, args):
+		callback = false
+
 		.type = 'call'
 		.write = def(scope):
 			argString = ''
@@ -335,7 +342,14 @@ exports.yy = {
 					ending = ', '
 				argString = argString + arg.write(scope) + ending
 
+			if (callback != false):
+				argString = argString + ', ' + callback.write(scope)
+
 			return value.write(scope) + '(' + argString + ')'
+
+		.callback = def (func):
+			callback = func
+			return this
 
 	Operation = def(relation, a, b):
 		.type = 'operation'

@@ -50,6 +50,7 @@ exports.grammar = {
 
 		Value = [
 			['Call', '$$ = $1;']
+			['Callback', '$$ = $1;']
 			['Assignable', '$$ = $1;']
 			['Literal', '$$ = $1;']
 			['Parenthetical', '$$ = $1;']
@@ -58,6 +59,10 @@ exports.grammar = {
 		Call = [
 			['Assignable Arguments', '$$ = new yy.Call($1, $2);']
 			['Call Arguments', '$$ = new yy.Call($1, $2);']
+		]
+
+		Callback = [
+			['Call : TERMINATOR IND Def TERMINATOR DED', '$$ = $1.callback($5);']
 		]
 
 		Arguments = [
