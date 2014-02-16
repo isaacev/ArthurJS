@@ -1,19 +1,25 @@
 {
-	"name": "ArthurJS",
-	"version": "0.1.0",
-	"description": "A small language that compiles to JavaScript using NodeJS. Built using love and Jison.",
-	"keywords": [
-		"arthur", "arthurjs", "jison", "language", "compile"
-	],
-	"bugs": {
-		"url": "http://github.com/isaacev/arthurjs/issues"
-	},
-	"main": "./bin/arthur.js",
-	"bin": {
-		"arthur": "./cli.js"
-	},
-	"license": "MIT",
-	"devDependencies": {
-		"jison": ">=0.4.13"
-	}
+  "name": "ArthurJS",
+  "version": "0.1.0",
+  "description": "A small language that compiles to JavaScript using NodeJS. Built using love and Jison.",
+  "keywords": [
+    "arthur",
+    "arthurjs",
+    "jison",
+    "language",
+    "compile"
+  ],
+  "bugs": {
+    "url": "http://github.com/isaacev/arthurjs/issues"
+  },
+  "main": "./bin/arthur.js",
+  "bin": {
+    "arthur": "./cli.js"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "jison": ">=0.4.13",
+    "grunt": "~0.4.2",
+    "grunt-contrib-coffee": "~0.10.0"
+  }
 }
