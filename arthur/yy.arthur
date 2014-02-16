@@ -330,7 +330,7 @@ exports.yy = {
 			return out
 
 	Call = def(value, args):
-		callback = false
+		callback = []
 
 		.type = 'call'
 		.write = def(scope):
@@ -342,13 +342,14 @@ exports.yy = {
 					ending = ', '
 				argString = argString + arg.write(scope) + ending
 
-			if (callback != false):
-				argString = argString + ', ' + callback.write(scope)
+			if (callback.length > 0):
+				for (i in callback as func):
+					argString = argString + ', ' + func.write(scope)
 
 			return value.write(scope) + '(' + argString + ')'
 
-		.callback = def (func):
-			callback = func
+		.callback = def (funcs):
+			callback = funcs
 			return this
 
 	Operation = def(relation, a, b):

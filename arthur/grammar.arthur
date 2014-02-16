@@ -62,7 +62,16 @@ exports.grammar = {
 		]
 
 		Callback = [
-			['Call : TERMINATOR IND Def TERMINATOR DED', '$$ = $1.callback($5);']
+			['Call : TERMINATOR IND Cb DED', '$$ = $1.callback($5);']
+		]
+
+		Cb = [
+			['CbFunction', '$$ = [$1];']
+			['Cb CbFunction', '$1.push($2);']
+		]
+
+		CbFunction = [
+			['Def TERMINATOR', '$$ = $1;']
 		]
 
 		Arguments = [
