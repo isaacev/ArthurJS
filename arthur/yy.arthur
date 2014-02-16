@@ -294,16 +294,14 @@ exports.yy = {
 	Parameter = def(identifier, defaultValue = false):
 		.type = 'parameter'
 		.write = def(scope, defaults = []):
-			identifier = identifier.write(scope)
-
 			if (defaultValue != false):
 				lines = [
-					'if (' + identifier + ' === undefined || ' + identifier + ' === null) {'
-					identifier + ' = ' + defaultValue.write(scope) + ';'
+					'if (' + identifier.write(scope) + ' === undefined || ' + identifier.write(scope) + ' === null) {'
+					identifier.write(scope) + ' = ' + defaultValue.write(scope) + ';'
 					'}'
 				]
 				defaults.push(lines)
-			return [identifier, defaults]
+			return [identifier.write(scope), defaults]
 
 	Literal = def(type, raw):
 		.type = 'literal'
