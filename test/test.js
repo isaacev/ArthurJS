@@ -11,13 +11,7 @@ function compile (code) {
 describe('Array', function () {
 	describe('#block', function () {
 		it('should return formatted data', function () {
-			Assert.equal('[\n\t\'foo\',\n\t\'bar\',\n\t\'baz\'\n];', compile('[\n\t\'foo\'\n\t\'bar\'\n\t\'baz\'\n]'))
-		});
-	});
-
-	describe('#inline', function () {
-		it('should return non-formatted data', function () {
-			Assert.equal();
+			Assert.equal('[\n\t\'foo\',\n\t\'bar\',\n\t\'baz\'\n];', compile('[\n\t\'foo\'\n\t\'bar\'\n\t\'baz\'\n]'));
 		});
 	});
 });
