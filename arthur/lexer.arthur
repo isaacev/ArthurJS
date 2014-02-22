@@ -45,7 +45,7 @@ rules = {
 	]
 
 	identifier = [
-		/^[a-zA-Z]+/
+		/^[a-zA-Z\_\$][a-zA-Z0-9\_\$]*/
 		def (raw, lex, modify):
 			pos.col = pos.col + raw.length
 
