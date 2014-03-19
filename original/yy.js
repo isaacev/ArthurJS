@@ -400,7 +400,13 @@ exports.yy = {
 					out += '!(' + list[i].write(scope) + ' instanceof ' + list[i + 2].write(scope) + ') ';
 					i += 2;
 				} else {
-					out += (list[i].write ? list[i].write(scope) : list[i]) + ' ';
+					if (list[i] === '!=') {
+						out += '!== ';
+					} else if (list[i] === '==') {
+						out += '=== ';
+					} else {
+						out += (list[i].write ? list[i].write(scope) : list[i]) + ' ';
+					}
 				}
 			}
 
