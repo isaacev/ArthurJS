@@ -35,7 +35,7 @@ exports.yy = {
 				out = variables + '\n' + out.replace(/s+$/, '')
 
 			if (opts.header == true):
-				out = '// Written by Arthur v0.1.0\n\n' + out
+				out = '// Written by Arthur v0.1.0\n' + out
 
 			return out
 
@@ -49,18 +49,19 @@ exports.yy = {
 
 	Def = def(args, block):
 		.type = 'def'
-		.write = def(scope, insulate = false):
+		.write = def(scope):
 			scope.indent()
 
 			argString = ''
 			defaults = []
 			for (i in args as arg):
-				scope.declareVar(arg, false)
+				scope.declareVar(arg, true)
 				if ((args.length - 1) == i):
 					ending = ''
 				else:
 					ending = ', '
 
+				scope.declareVar(arg.writeName(scope), true)
 				arg = arg.write(scope, defaults)
 				defaults = arg[1]
 				argString = argString + arg[0] + ending
@@ -83,7 +84,7 @@ exports.yy = {
 					defaultString = defaultString + tab(scope) + defaults[i][0] + '\n'
 
 					scope.indentTemp()
-					defaultString = defaultString + tab(scope) + defaults[i][0] + '\n'
+					defaultString = defaultString + tab(scope) + defaults[i][1] + '\n'
 					scope.dedentTemp()
 
 					defaultString = defaultString + tab(scope) + defaults[i][2] + '\n'
@@ -97,10 +98,7 @@ exports.yy = {
 
 			out = 'function (' + argString + ') {\n' + variables + defaultString + out
 
-			if (insulate == true):
-				return '(' + out + ')'
-			else:
-				return out
+			return out
 
 	Return = def(expression):
 		.type = 'return'
@@ -300,12 +298,11 @@ exports.yy = {
 				elseif (relation == '=='):
 					relation = '==='
 
-				#console.log(scope.scope)
 				out = a.write(scope) + ' ' + relation + ' ' + b.write(scope)
 
 			return out
 
-	Parameter = def(identifier, defaultValue = false):
+	Parameter = def(identifier, defaultValue):
 		.type = 'parameter'
 		.write = def(scope, defaults = []):
 			if (defaultValue != false):
@@ -316,6 +313,9 @@ exports.yy = {
 				]
 				defaults.push(lines)
 			return [identifier.write(scope), defaults]
+
+		.writeName = def(scope):
+			return identifier.write(scope)
 
 	Literal = def(type, raw):
 		.type = 'literal'

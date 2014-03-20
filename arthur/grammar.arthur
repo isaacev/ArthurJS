@@ -92,6 +92,7 @@ exports.grammar = {
 			['-- Assignable', '$$ = new yy.Operation("--", $2, false);']
 			['Assignable ++', '$$ = new yy.Operation("++", $1, true);']
 			['Assignable --', '$$ = new yy.Operation("--", $1, true);']
+			['Assignable ?', '$$ = new yy.Operation("?", $1);']
 			['Math', '$$ = $1;']
 		]
 
@@ -130,7 +131,7 @@ exports.grammar = {
 
 		IfBlock = [
 			['IF ( Value ) : Block', '$$ = new yy.If("true", $3, $6);']
-			['IF ( Operation ) : Block', '$$ = new yy.If("operation");']
+			['IF ( Operation ) : Block', '$$ = new yy.If("operation", $3, $6);']
 			['IF ( Comparison ) : Block', '$$ = new yy.If("comparison", $3, $6);']
 		]
 
@@ -208,8 +209,8 @@ exports.grammar = {
 			['Value LOGIC Operation', '$$ = new yy.Comparison($1, $2, $3);']
 			['Operation LOGIC Value', '$$ = new yy.Comparison($1, $2, $3);']
 			['Operation LOGIC Operation', '$$ = new yy.Comparison($1, $2, $3);']
-			['Comparison LOGIC Value', '$$ = $1.append($1, $2, false);']
-			['Comparison LOGIC Operation', '$$ = $1.append($1, $2, false);']
+			['Comparison LOGIC Value', '$$ = new yy.Comparison($1, $2, $3);']
+			['Comparison LOGIC Operation', '$$ = new yy.Comparison($1, $2, $3);']
 		]
 
 		Assignable = [
