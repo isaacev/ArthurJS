@@ -12,7 +12,8 @@ Gulp.task('arthur', function () {
 	Gulp.src('./arthur/*.arthur')
 		.pipe(GulpArthur({
 			bare: true,
-			basic: true
+			basic: false,
+			careful: true
 		}).on('error', GulpUtil.log))
 		.pipe(Gulp.dest('./bin/modules/'));
 });
@@ -33,15 +34,18 @@ Gulp.task('validate', function () {
 // source files, wrapping them in a sercret sauce that
 // allows them to run in Node.js or client-side seamlessly
 Gulp.task('build', function () {
+	// since `false`, load files from ./bin/modules (normal location)
 	Build(false);
 });
 
 
 // different than `build`, `original` uses the previously generated
-// JavaScript files to creat the parser. this is in case the latest
+// JavaScript files to create the parser. this is in case the latest
 // files get malformed and therefore the parser becomes malformed
 // making it impossible to correct the files
 Gulp.task('original', function () {
+	// since `true`, load files from ./src (backup location)
+	// these were the files hand-written in JavaScript
 	Build(true);
 });
 
