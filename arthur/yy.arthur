@@ -266,9 +266,18 @@ exports.yy = {
 			return out + tab(scope) + '}'
 
 	Id = def(raw):
+		accessible = false
+
 		.type = 'identifier'
 		.write = def:
-			return raw.toString()
+			if (accessible == true):
+				return 'this.' + raw.toString()
+			else:
+				return raw.toString()
+
+		.accessThis = def:
+			accessible = true
+			return this
 
 	Comparison = def(a, relation, b):
 		.type = 'comparison'
