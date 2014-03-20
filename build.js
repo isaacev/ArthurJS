@@ -1,5 +1,8 @@
 var Fs = require('fs');
 var Jison = require('jison');
+var Spawn = require('child_process').spawn;
+
+var VERSION = '\'1.0.0\'';
 
 function loadFile(path, callback) {
 	Fs.readFile(path, 'utf8', function (err, data) {
@@ -19,33 +22,58 @@ function saveFile(path, data) {
 	});
 }
 
+function uglify(path) {
+	var term = Spawn('uglifyjs', [path]);
+	var chunks = '';
+
+	term.stderr.on('data', function (data) {
+		// console.log(process.stderr.write(data.toString()));
+	});
+
+	term.stdout.on('data', function (data) {
+		chunks += data.toString();
+	});
+
+	term.on('exit', function (code) {
+		if (code === 0) {
+			saveFile('./bin/arthur.min.js', chunks);
+		} else {
+			console.log(arguments);
+		}
+	})
+	console.log('uglified');
+}
+
 var source = {};
 var loaded = 0;
+
+var corruptPath = './src/';
+var regPath = './bin/modules/';
 
 exports.build = function (hasBeenCorrupted) {
 	hasBeenCorrupted = hasBeenCorrupted || false;
 
-	loadFile((hasBeenCorrupted ? './src/lexer.js' : './bin/modules/lexer.js'), function (data) {
+	loadFile((hasBeenCorrupted ? corruptPath : regPath) + 'lexer.js', function (data) {
 		source.lexer = data;
 		run(hasBeenCorrupted);
 	});
 
-	loadFile((hasBeenCorrupted ? './src/grammar.js' : './bin/modules/grammar.js'), function (data) {
+	loadFile((hasBeenCorrupted ? corruptPath : regPath) + 'grammar.js', function (data) {
 		source.grammar = data;
 		run(hasBeenCorrupted);
 	});
 
-	loadFile((hasBeenCorrupted ? './src/yy.js' : './bin/modules/yy.js'), function (data) {
+	loadFile((hasBeenCorrupted ? corruptPath : regPath) + 'yy.js', function (data) {
 		source.yy = data;
 		run(hasBeenCorrupted);
 	});
 
-	loadFile((hasBeenCorrupted ? './src/scope.js' : './bin/modules/scope.js'), function (data) {
+	loadFile((hasBeenCorrupted ? corruptPath : regPath) + 'scope.js', function (data) {
 		source.scope = data;
 		run(hasBeenCorrupted)
 	});
 
-	loadFile((hasBeenCorrupted ? './src/helpers.js' : './bin/modules/helpers.js'), function (data) {
+	loadFile((hasBeenCorrupted ? corruptPath : regPath) + 'helpers.js', function (data) {
 		source.helpers = data;
 		run(hasBeenCorrupted);
 	});
@@ -69,8 +97,8 @@ function run(hasBeenCorrupted) {
 		file += 'var yy = (function(exports, require) {' + source.yy + '})(exports, require);';
 		file += source.parser;
 
-		file += 'parser.yy = exports.yy; return {parse: function (code, opts) {opts = opts || {}; parser.lexer = new exports.lexer(); var root = parser.parse(code + \'\\n\');return root.compile(opts).trim();},run: function (code, opts) {opts = opts || {};parser.lexer = new exports.lexer();var root = parser.parse(code + \'\\n\');return eval(root.compile(opts).trim());}};})();';
-		file += 'if(typeof exports!==\'undefined\'&&typeof require!==\'undefined\'){ exports.parse = function () { return Arthur.parse.apply(Arthur,arguments); }; }';
+		file += 'parser.yy = exports.yy; return {parse: function (code, opts) {opts = opts || {}; parser.lexer = new exports.lexer(); var root = parser.parse(code + \'\\n\');return root.compile(opts).trim();},run: function (code, opts) {opts = opts || {};parser.lexer = new exports.lexer();var root = parser.parse(code + \'\\n\');return eval(root.compile(opts).trim());}, VERSION: ' + VERSION + '};})();';
+		file += 'if(typeof exports!==\'undefined\'&&typeof require!==\'undefined\'){ exports.parse = function () { return Arthur.parse.apply(Arthur,arguments); }; exports.run = function (code, opts) {var Vm = require(\'vm\'); if (opts.sandbox instanceof Vm.Script.createContext().constructor) {var sandbox = opts.sandbox; } else { var sandbox = Vm.Script.createContext(global); sandbox.global = global; sandbox.require = require; sandbox.process = process; } Vm.runInContext(Arthur.parse(code, opts), sandbox); }; exports.VERSION = Arthur.VERSION;}';
 
 		if (hasBeenCorrupted) {
 			console.log('finished rebuilding arthur.js with basic (0.1) compiler');
@@ -79,5 +107,6 @@ function run(hasBeenCorrupted) {
 		}
 
 		saveFile('./bin/arthur.js', file);
+		uglify('./bin/arthur.js');
 	}
 }
