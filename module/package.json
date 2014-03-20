@@ -1,0 +1,23 @@
+{
+  "name": "Arthur",
+  "version": "1.0.0",
+  "description": "A small language that compiles to JavaScript using NodeJS. Built using love and Jison.",
+  "main": "./index.js",
+  "bin": {
+  	"arthur": "./cli.js",
+  	"feast": "./feast.js"
+  },
+  "dependencies": {
+  	"jison": "~0.4.13",
+  	"commander": "~2.1.0"
+  },
+  "keywords": [
+    "arthur",
+    "arthurjs",
+    "jison",
+    "language",
+    "compile"
+  ],
+  "author": "isaacev",
+  "license": "MIT"
+}
