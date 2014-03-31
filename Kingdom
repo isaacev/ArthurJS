@@ -1,0 +1,27 @@
+Fs = require('fs')
+Jison = require('jison').Parser
+Spawn = require('child_process').spawn
+
+saveFile = def(path, data):
+	Fs.writeFile(path, data):
+		def(err):
+			if (err != null):
+				throw Error(err.toString())
+			else:
+				console.log('saved', path)
+
+decree('build', 'compile Arthur source files into individual JavaScript files'):
+	def(opts):
+		# compile all Arthur files to JavaScript and place them in the `bin` folder
+		# Spawn('arthur', ['arthur', 'tmp'])
+		console.log(Spawn('arthur', ['-p', 'arthur/yy.arthur']))
+		console.log('built all file')
+
+		# build parser
+		parser = new Jison(require('../bin/grammar.js').grammar)
+		source = parser.generate()
+		saveFile('./bin/parser.js', source)
+
+		# build grammar using command line
+		# Spawn('jison', ['./bin/grammar.js', './bin/lexer.js', '-j', '-o', './bin/parser.js'])
+		# console.log('built parser')
