@@ -1,0 +1,45 @@
+Fs = require('fs')
+Vm = require('vm')
+Arthur = require('../bin/arthur.js')
+
+tasks = {}
+args = process.argv.slice(2)
+
+task = def(name, desc, func):
+	tasks[name] = {
+		desc = desc
+		exec = func
+	}
+
+run = def(name, args = {}):
+	if (tasks[name]?):
+		tasks[name].exec(args)
+	else:
+		return 'No task: ' + name
+
+printTasks = def:
+	str = '                              '
+
+	console.log('Kingdom file describes these tasks:\n')
+	for (i in tasks as task):
+		name = 'king ' + i
+		console.log(name + str.substr(name.length, str.length) + '# ' + task.desc)
+
+Fs.readFile('./Kingdom', 'utf8'):
+	def(err, data):
+		if (err != null):
+			throw err
+		else:
+			sandbox = Vm.Script.createContext(global)
+			sandbox.require = require
+			sandbox.global = global
+			sandbox.task = task
+
+			Arthur.run(data, {
+				sandbox = sandbox
+			})
+
+			if (args.length == 0):
+				printTasks()
+			else:
+				run(args[0])
