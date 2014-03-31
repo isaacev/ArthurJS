@@ -47,8 +47,8 @@ function uglify(path) {
 var source = {};
 var loaded = 0;
 
-var corruptPath = './src/';
-var regPath = './bin/modules/';
+var corruptPath = './original/';
+var regPath = './bin/';
 
 exports.build = function (hasBeenCorrupted) {
 	hasBeenCorrupted = hasBeenCorrupted || false;
@@ -84,7 +84,7 @@ function run(hasBeenCorrupted) {
 	loaded++;
 
 	if (loaded === 5) {
-		var parser = new Jison.Parser(require((hasBeenCorrupted ? './src/grammar.js' : './bin/modules/grammar.js')).grammar);
+		var parser = new Jison.Parser(require((hasBeenCorrupted ? './src/grammar.js' : './bin/grammar.js')).grammar);
 		source.parser = parser.generate({
 			moduleType: 'js'
 		});
@@ -98,7 +98,7 @@ function run(hasBeenCorrupted) {
 		file += source.parser;
 
 		file += 'parser.yy = exports.yy; return {parse: function (code, opts) {opts = opts || {}; parser.lexer = new exports.lexer(); var root = parser.parse(code + \'\\n\');return root.compile(opts).trim();},run: function (code, opts) {opts = opts || {};parser.lexer = new exports.lexer();var root = parser.parse(code + \'\\n\');return eval(root.compile(opts).trim());}, VERSION: ' + VERSION + '};})();';
-		file += 'if(typeof exports!==\'undefined\'&&typeof require!==\'undefined\'){ exports.parse = function () { return Arthur.parse.apply(Arthur,arguments); }; exports.run = function (code, opts) {var Vm = require(\'vm\'); if (opts.sandbox instanceof Vm.Script.createContext().constructor) {var sandbox = opts.sandbox; } else { var sandbox = Vm.Script.createContext(global); sandbox.global = global; sandbox.require = require; sandbox.process = process; } Vm.runInContext(Arthur.parse(code, opts), sandbox); }; exports.VERSION = Arthur.VERSION;}';
+		file += 'if(typeof exports!==\'undefined\'&&typeof require!==\'undefined\'){ exports.parse = function () { return Arthur.parse.apply(Arthur,arguments); }; exports.run = function (code, opts) { opts = opts || {}; var Vm = require(\'vm\'); if (opts.sandbox instanceof Vm.Script.createContext().constructor) {var sandbox = opts.sandbox; } else { var sandbox = Vm.Script.createContext(global); sandbox.global = global; sandbox.require = require; sandbox.process = process; } Vm.runInContext(Arthur.parse(code, opts), sandbox); }; exports.VERSION = Arthur.VERSION;}';
 
 		if (hasBeenCorrupted) {
 			console.log('finished rebuilding arthur.js with basic (0.1) compiler');
@@ -106,7 +106,7 @@ function run(hasBeenCorrupted) {
 			return;
 		}
 
-		saveFile('./bin/arthur.js', file);
-		uglify('./bin/arthur.js');
+		saveFile('./lib/arthur.js', file);
+		// uglify('./bin/arthur.lib.js');
 	}
 }
