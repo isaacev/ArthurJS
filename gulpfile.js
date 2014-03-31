@@ -7,15 +7,16 @@ var Build = require('./build.js').build;
 
 // takes each *.arthur file in `/arthur/` and compiles
 // it to JavaScript, placing the output data inside
-// `/bin/modules/` directory
+// `/bin` directory
 Gulp.task('arthur', function () {
 	Gulp.src('./arthur/*.arthur')
 		.pipe(GulpArthur({
-			bare: true,
+			header: true,
+			bare: false,
 			basic: false,
 			careful: true
 		}).on('error', GulpUtil.log))
-		.pipe(Gulp.dest('./bin/modules/'));
+		.pipe(Gulp.dest('./bin/'));
 });
 
 
@@ -25,7 +26,7 @@ Gulp.task('arthur', function () {
 // can be written because the parser is corrupt making
 // it impossible to correct the mistake
 Gulp.task('validate', function () {
-	Gulp.src('./bin/modules/*.js')
+	Gulp.src('./lib/*.js')
 		.pipe(GulpValidate());
 });
 
@@ -34,7 +35,7 @@ Gulp.task('validate', function () {
 // source files, wrapping them in a sercret sauce that
 // allows them to run in Node.js or client-side seamlessly
 Gulp.task('build', function () {
-	// since `false`, load files from ./bin/modules (normal location)
+	// since `false`, load files from ./bin (normal location)
 	Build(false);
 });
 
@@ -60,7 +61,7 @@ Gulp.task('watch', function () {
 
 // the default task
 // builds all the *.arthur files in the arthur directory,
-// saving them into the modules folder. when completed,
+// saving them into the bin folder. when completed,
 // it validates their JavaScript, checking for malformed
 // code. if the tests pass, it builds them all into a new
 // Arthur compiler
