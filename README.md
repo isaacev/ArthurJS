@@ -33,25 +33,25 @@ Arthur employs many of the same syntactic elements as JavaScript but with many s
 ### hello world
 
 ```
-# define a function
-helloWorld = def:
-	return 'Hello World!'
+	# define a function
+	helloWorld = def:
+		return 'Hello World!'
 
-console.log(helloWorld())
+	console.log(helloWorld())
 ```
 
 becomes:
 
 ```javascript
-(function () {
-	var helloWorld;
+	(function () {
+		var helloWorld;
 
-	helloWorld = function () {
-		return 'Hello World!';
-	};
+		helloWorld = function () {
+			return 'Hello World!';
+		};
 
-	console.log(helloWorld());
-}());
+		console.log(helloWorld());
+	}());
 ```
 
 ## License
