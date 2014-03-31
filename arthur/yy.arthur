@@ -35,7 +35,7 @@ exports.yy = {
 				out = variables + '\n' + out.replace(/s+$/, '')
 
 			if (opts.header == true):
-				out = '// Written by Arthur v0.1.0\n' + out
+				out = '// Written by Arthur v1.0.0\n' + out
 
 			return out
 

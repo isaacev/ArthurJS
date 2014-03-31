@@ -62,7 +62,7 @@ saveFile = function (path, data) {
 		}
 
 	};
-	Fs.writeFile(path, '// Written by Arthur v0.1.0\n' + data, process);
+	Fs.writeFile(path, '// Written by Arthur v' + Arthur.VERSION + '\n' + data, process);
 };
 
 buildFileName = function (path) {
