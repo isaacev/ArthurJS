@@ -1,0 +1,14 @@
+Parser = require('./parser.js')
+Lexer = require('./lexer.js').lexer
+Yy = require('./yy.js').yy
+
+Parser.parser.yy = Yy
+
+exports.VERSION = '1.2.3'
+
+exports.parse = def(code, opts):
+	# reset lexer each time
+	Parser.parser.lexer = new Lexer()
+
+	root = Parser.parse(code + '\n')
+	return root.compile(opts).trim()
