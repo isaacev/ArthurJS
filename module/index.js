@@ -1,1 +1,1 @@
-module.exports = require('../bin/arthur.js');
+module.exports = require('../bin/main.js');

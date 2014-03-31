@@ -2,7 +2,11 @@
 
 var Arthur, Cli, Fs, Path, Repl, Vm, args, sandbox, compile, loadFile, saveFile;
 
-Arthur = require('../bin/arthur.js');
+Arthur = require('../bin/main.js');
+if (!Arthur.VERSION) {
+	Arthur = require('../lib/arthur.js');
+}
+
 Cli = require('commander');
 Fs = require('fs');
 Path = require('path');
@@ -16,16 +20,11 @@ Cli.option('-d --destination <dest>', 'saves compiled file to destination');
 Cli.option('-p --print', 'print compiled code to terminal');
 Cli.option('-b --bare', 'remove global function wrapper');
 Cli.option('-r --run', 'execute compiled JavaScript');
-// Cli.option('-r --repl', 'open REPL (read, evaluate, print loop)');
+Cli.option('-l --log', 'log each file compilation and flag errors');
 
 Cli.parse(process.argv);
 
 args = {};
-// if (Cli.args.length == 0 || Cli.repl) {
-// 	args.repl = true;
-// } else {
-// 	args.repl = false;
-// }
 
 args.repl = false;
 args.src = Cli.args[0] || Cli.compile || false;
@@ -33,6 +32,7 @@ args.dest = Cli.args[1] || Cli.destination || false;
 args.print = Cli.print || false;
 args.bare = Cli.bare || false;
 args.run = Cli.run || false;
+args.log = Cli.log || false;
 args.help = Cli.help || false;
 args.version = Cli.version || false;
 
@@ -130,7 +130,7 @@ try {
 		compile = function (path, code) {
 			var js;
 
-			js = Arthur.parse(code + '\n', {
+			js = Arthur.parse(code, {
 				bare: args.bare,
 				header: false
 			});
@@ -155,17 +155,17 @@ try {
 		compile = function (path, code) {
 			var js;
 
-			// try {
-				js = Arthur.parse(code + '\n', {
+			try {
+				js = Arthur.parse(code, {
 					bare: args.bare,
 					header: false
 				});
-			// } catch (err) {
-			// 	console.log('problem compiling', path);
-			// 	console.log(err);
-			// }
+			} catch (err) {
+				console.log('problem compiling', path);
+				console.log(err);
+			}
 
-			if (args.dest !== false) {
+			if (args.dest !== false && js != undefined) {
 				saveFile(args.dest + '/' + buildFileName(path), js);
 			} else {
 				console.log('successfully validated', path);

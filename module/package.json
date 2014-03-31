@@ -4,8 +4,8 @@
   "description": "A small language that compiles to JavaScript using NodeJS. Built using love and Jison.",
   "main": "./index.js",
   "bin": {
-  	"arthur": "./cli.js",
-  	"feast": "./feast.js"
+  	"arthur": "../bin/cli.js",
+  	"king": "../bin/king.js"
   },
   "dependencies": {
   	"jison": "~0.4.13",
