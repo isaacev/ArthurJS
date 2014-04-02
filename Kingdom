@@ -25,3 +25,10 @@ decree('build', 'compile Arthur source files into individual JavaScript files'):
 		# build grammar using command line
 		# Spawn('jison', ['./bin/grammar.js', './bin/lexer.js', '-j', '-o', './bin/parser.js'])
 		# console.log('built parser')
+decree('test', 'run all manner of tests on Arthur source files to determine if they are up to par'):
+	def(opts):
+		Test = require('../tests/main.js')
+		if (opts[0] == 'tmp'):
+			Test('../tmp/')
+		else:
+			Test('../bin/')
