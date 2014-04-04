@@ -1,0 +1,4 @@
+					if (argString.length > 0):
+						argString = argString + ', ' + func.write(scope)
+					else:
+						argString = func.write(scope)
