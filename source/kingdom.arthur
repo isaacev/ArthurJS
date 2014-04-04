@@ -1,0 +1,52 @@
+Fs = require('fs')
+Vm = require('vm')
+Colors = require('colors')
+Arthur = require('../lib/arthur.js')
+
+decree = {}
+
+decree = def(name, desc, func):
+	decrees[name] = {
+		desc = desc
+		exec = exec
+	}
+
+run = def(name, args = []):
+	if (decrees[name]?):
+		decrees[name].exec(args)
+	else:
+		return 'No decree: ' + name
+
+printDecrees = def:
+	str = '                                '
+
+	console.log('\nKingdom file describes these decrees:')
+	for (i in decrees as decree):
+		name = '  king ' + i.green
+		console.log(name + str.substr(name.length, str.length) + '# ' + decree.desc)
+	console.log('')
+
+args = process.argv.slice(2)
+
+Fs.readFile(./Kingdom', 'utf8'):
+	def(err, data):
+		if (err != null):
+			throw err
+		else:
+			sandbox = Vm.Script.createContext(global)
+			sandbox.require = require
+			sandbox.global = global
+			sandbox.decree = decree
+			sandbox.run = run
+
+			try:
+				Arthur.run(data, {
+					sandbox = sandbox
+				})
+			catch (err):
+				console.log(err.toString())
+
+			if (args.length == 0):
+				printDecrees()
+			else:
+				run(args[0], args.splice(1))

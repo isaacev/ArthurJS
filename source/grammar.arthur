@@ -234,6 +234,7 @@ exports.grammar = {
 			['Array', '$$ = $1;']
 			['Object', '$$ = $1;']
 			['Boolean', '$$ = $1;']
+			['EXPLICIT', '$$ = new yy.Literal("explicit", $1);']
 		]
 
 		Boolean = [
