@@ -121,7 +121,7 @@ rules = {
 	]
 
 	regex = [
-		/^\/(?:[^\/\\]|\\.)+\//
+		/^\/(?:[^\/\\\n]|\\.)+\//
 		def (raw):
 			pos.col = pos.col + raw.length
 
@@ -201,6 +201,7 @@ exports.lexer = def:
 
 		if (returnQuick == true):
 			console.log(tokens)
+			console.log(literals)
 			return
 		return this
 
