@@ -57,7 +57,7 @@ Fs.readFile('./Kingdom', 'utf8', function (err, data) {
 		if (args.length === 0) {
 			printDecrees();
 		} else {
-			run(args[0]);
+			run(args[0], args.splice(1));
 		}
 	}
 });
