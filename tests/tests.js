@@ -13,6 +13,10 @@ exports.test = function (describe) {
 		test('/=', 1, 'foo = 2\nfoo /= 2');
 	});
 
+	describe('regex', function (test) {
+		test('test', true, "/\\d+/.test('123')");
+	})
+
 	describe('string manipulation', function (test) {
 		test('concatenation', 'foobar', "'foo' + 'bar'");
 		test('length', 10, "'abcdefghij'.length");
