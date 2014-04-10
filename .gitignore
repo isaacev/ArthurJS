@@ -4,12 +4,10 @@ test.arthur
 
 node_modules
 
-bin/modules
+bin
 
 src
 
 original
 
 tmp
-
-bin
