@@ -146,7 +146,7 @@ check = def(lex, rule):
 			match[0] = mod
 
 		increment = def (inc):
-			advancement = advancement + inc
+			advancement += inc
 
 		result = rule[1](match[0], lex, modification, increment)
 

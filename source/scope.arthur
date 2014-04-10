@@ -8,11 +8,11 @@ exports.Scope = def:
 			out = 'var '
 			for (i in local as variable):
 				if (i > 0):
-					out = out + ', '
+					out += ', '
 				if (variable typeof 'object'):
-					out = out + variable[0] + variable[1]
+					out += variable[0] + variable[1]
 				else:
-					out = out + variable
+					out += variable
 			return out
 		else:
 			return ''
