@@ -6,9 +6,9 @@ function printStatus(name, failures) {
 	if (failures.length === 0) {
 		console.log('  ' + name + str.substr(name.length + 2, str.length) + 'passed'.green);
 	} else {
-		console.log('  ' + name.bold + str.substr(name.length + 2, str.length) + 'failed'.magenta);
+		console.log('  ' + name.bold + str.substr(name.length + 2, str.length) + 'failed'.red);
 		for (var i = 0, len = failures.length; i < len; i++) {
-			console.log('    ' + failures[i].bold + str.substr(failures[i].length + 4, str.length) + 'failed'.magenta);
+			console.log('    ' + failures[i].bold + str.substr(failures[i].length + 4, str.length) + 'failed'.red);
 		}
 	}
 }
