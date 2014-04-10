@@ -2,6 +2,7 @@
 
 var Fs = require('fs');
 var Vm = require('vm');
+var Colors = require('colors');
 var Arthur = require('../lib/arthur.js');
 
 var decrees = {};
@@ -15,7 +16,7 @@ function decree(name, desc, func) {
 
 function run(name, args) {
 	if (args === undefined) {
-		args = {};
+		args = [];
 	}
 
 	if (decrees[name]) {
@@ -26,13 +27,14 @@ function run(name, args) {
 };
 
 function printDecrees() {
-	var name, str = '                              ';
+	var name, str = '                                ';
 
-	console.log('Kingdom file describes these decrees:\n');
+	console.log('\nKingdom file describes these decrees:');
 	for (var i in decrees) {
-		name = 'king ' + i;
+		name = '  king ' + i.green;
 		console.log(name + str.substr(name.length, str.length) + '# ' + decrees[i].desc);
 	}
+	console.log('');
 }
 
 var args = process.argv.slice(2);
@@ -45,6 +47,7 @@ Fs.readFile('./Kingdom', 'utf8', function (err, data) {
 		sandbox.require = require;
 		sandbox.global = global;
 		sandbox.decree = decree;
+		sandbox.run = run;
 
 		try {
 			Arthur.run(data, {
