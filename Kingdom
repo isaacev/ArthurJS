@@ -1,34 +1,86 @@
 Fs = require('fs')
-Jison = require('jison').Parser
+Path = require('path')
 Spawn = require('child_process').spawn
+Jison = require('jison').Parser
 
-saveFile = def(path, data):
-	Fs.writeFile(path, data):
-		def(err):
-			if (err != null):
-				throw Error(err.toString())
-			else:
-				console.log('saved', path)
 
-decree('build', 'compile Arthur source files into individual JavaScript files'):
+
+decree('build:prod', 'replaces existing compiler files with new, heavily tested ones'):
+	def(opts):
+		# build files to `tmp`
+		# compile all Arthur files to JavaScript and place them in the `bin` folder
+		console.log('compiling source files...')
+		proc = Spawn('arthur', ['source', 'tmp'])
+
+		proc.on('close'):
+			def(code):
+				# build parser and--when completed--move the files from `tmp` to `bin` to be used as source files
+				console.log('building parser...')
+				parser = new Jison(require('../tmp/grammar.js').grammar)
+				source = parser.generate()
+
+				Fs.writeFile('./tmp/parser.js', source):
+					def(err):
+						if (err != null):
+							throw err
+						else:
+							console.log('  saved parser')
+
+							# movie fiels to new directory
+							Fs.readdir('./tmp/'):
+								def(err, files):
+									console.log('moving files to `bin`...')
+									for (i in files as file):
+										if (i == files.length - 1):
+											console.log('  files moved')
+
+										Fs.rename('./tmp/' + file, './bin/' + file):
+											def(err):
+												if (err != null):
+													console.log(err.toString())
+
+
+		# announce the completion of the compiling
+		proc.on('exit'):
+			def(code):
+				console.log('  compiled source files')
+
+
+
+decree('build:temp', 'compiles Arthur files into individual JavaScript files for testing'):
 	def(opts):
 		# compile all Arthur files to JavaScript and place them in the `bin` folder
-		# Spawn('arthur', ['arthur', 'tmp'])
-		console.log(Spawn('arthur', ['-p', 'arthur/yy.arthur']))
-		console.log('built all file')
+		console.log('compliling source files...')
+		proc = Spawn('arthur', ['source', 'tmp'])
 
-		# build parser
-		parser = new Jison(require('../bin/grammar.js').grammar)
-		source = parser.generate()
-		saveFile('./bin/parser.js', source)
+		proc.on('close'):
+			def(code):
+				# build parser
+				console.log('building parser...')
+				parser = new Jison(require('../tmp/grammar.js').grammar)
+				source = parser.generate()
+				Fs.writeFile('./tmp/parser.js', source):
+					def(err):
+						if (err != null):
+							throw err
+						else:
+							console.log('  saved parser')
 
-		# build grammar using command line
-		# Spawn('jison', ['./bin/grammar.js', './bin/lexer.js', '-j', '-o', './bin/parser.js'])
-		# console.log('built parser')
+		proc.on('exit'):
+			def(code):
+				console.log('  compiled source files')
+
+
+
 decree('test', 'run all manner of tests on Arthur source files to determine if they are up to par'):
 	def(opts):
 		Test = require('../tests/main.js')
-		if (opts[0] == 'tmp'):
-			Test('../tmp/')
+		if (opts[0] == 'temp'):
+			Fs.readdir('./tmp/'):
+				def(err, files):
+					if (files.length > 0):
+						Test('../tmp/')
+					else:
+						console.log('No files in `tmp` directory to test')
 		else:
 			Test('../bin/')
