@@ -5,7 +5,7 @@
 	Lexer = require('./lexer.js').lexer;
 	Yy = require('./yy.js').yy;
 	Parser.parser.yy = Yy;
-	exports.VERSION = '1.2.3';
+	exports.VERSION = '1.0.0';
 	exports.parse = function (code, opts) {
 		var root;
 

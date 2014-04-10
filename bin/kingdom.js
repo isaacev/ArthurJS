@@ -1,40 +1,42 @@
 // Written by Arthur v1.0.0
 (function() {
-	var Fs, Vm, Arthur, tasks, args, task, run, printTasks;
+	var Fs, Vm, Colors, Arthur, decree, run, printDecrees, args;
 	Fs = require('fs');
 	Vm = require('vm');
-	Arthur = require('../bin/arthur.js');
-	tasks = {};
-	args = process.argv.slice(2);
-	task = function (name, desc, func) {
-		tasks[name] = {
+	Colors = require('colors');
+	Arthur = require('../lib/arthur.js');
+	decree = {};
+	decree = function (name, desc, func) {
+		decrees[name] = {
 			desc: desc,
-			exec: func
+			exec: exec
 		};
 	};
 	run = function (name, args) {
 		if (args === undefined || args === null) {
-			args = {};
+			args = [];
 		}
 
-		if ((typeof tasks[name] !== 'undefined' && tasks[name] !== null)) {
-			tasks[name].exec(args);
+		if ((typeof decrees[name] !== 'undefined' && decrees[name] !== null)) {
+			decrees[name].exec(args);
 		} else {
-			return 'No task: ' + name;
+			return 'No decree: ' + name;
 		}
 
 	};
-	printTasks = function () {
+	printDecrees = function () {
 		var str, i, _i, _len, name;
 
-		str = '                              ';
-		console.log('Kingdom file describes these tasks:\n');
-		for (i = _i = 0, _len = tasks.length; _i < _len; i = ++_i) {
-			task = tasks[i];
-			name = 'king ' + i;
-			console.log(name + str.substr(name.length, str.length) + '# ' + task.desc);
+		str = '                                ';
+		console.log('\nKingdom file describes these decrees:');
+		for (i = _i = 0, _len = decrees.length; _i < _len; i = ++_i) {
+			decree = decrees[i];
+			name = '  king ' + i.green;
+			console.log(name + str.substr(name.length, str.length) + '# ' + decree.desc);
 		}
+		console.log('');
 	};
+	args = process.argv.slice(2);
 	Fs.readFile('./Kingdom', 'utf8', function (err, data) {
 		var sandbox;
 
@@ -44,14 +46,19 @@
 			sandbox = Vm.Script.createContext(global);
 			sandbox.require = require;
 			sandbox.global = global;
-			sandbox.task = task;
-			Arthur.run(data, {
-				sandbox: sandbox
-			});
+			sandbox.decree = decree;
+			sandbox.run = run;
+			try {
+				Arthur.run(data, {
+					sandbox: sandbox
+				});
+			} catch (err) {
+				console.log(err.toString());
+			}
 			if (args.length === 0) {
-				printTasks();
+				printDecrees();
 			} else {
-				run(args[0]);
+				run(args[0], args.splice(1));
 			}
 
 		}

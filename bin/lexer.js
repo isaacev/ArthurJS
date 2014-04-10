@@ -39,7 +39,6 @@
 						indent.shift();
 					}
 				}
-
 				return tokens;
 			}
 		],
@@ -86,7 +85,6 @@
 				} else {
 					return 'IDENTIFIER';
 				}
-
 			}
 		],
 		logicSymbol: [
@@ -97,7 +95,7 @@
 			}
 		],
 		literalSymbol: [
-			/^\+\+|^\+|^\-\-|^\.\.|^\.|^\-|^\/|^\*\*|^\*|^\,|^\(|^\)|^\[|^\]|^\{|^\}|^\=|^\:|^\?|^\@|^\!/,
+			/^\+\=|^\-\=|^\*\=|^\/\=|^\+\+|^\+|^\-\-|^\.\.|^\.|^\-|^\/|^\%|^\*\*|^\*|^\,|^\(|^\)|^\[|^\]|^\{|^\}|^\=|^\:|^\?|^\@|^\!/,
 			function (raw) {
 				pos.col = pos.col + raw.length;
 				if ([
@@ -105,13 +103,20 @@
 					'-',
 					'*',
 					'/',
+					'%',
 					'**'
+				].indexOf(raw) > -1) {
+					return 'MATH';
+				} else if ([
+					'+=',
+					'-=',
+					'*=',
+					'/='
 				].indexOf(raw) > -1) {
 					return 'MATH';
 				} else {
 					return raw;
 				}
-
 			}
 		],
 		string: [
@@ -127,6 +132,14 @@
 			function (raw) {
 				pos.col = pos.col + raw.length;
 				return 'NUMBER';
+			}
+		],
+		explicit: [
+			/^\`(?:[^\`\\]|\\.)*\`/,
+			function (raw, lex, modify) {
+				pos.col = pos.col + raw.length;
+				modify(raw.substr(1).substr(0, raw.length - 2));
+				return 'EXPLICIT';
 			}
 		],
 		regex: [
@@ -184,7 +197,7 @@
 				match[0] = mod;
 			};
 			increment = function (inc) {
-				advancement = advancement + inc;
+				advancement += inc;
 			};
 			result = rule[1](match[0], lex, modification, increment);
 			if (result !== false) {
@@ -199,16 +212,13 @@
 					} else {
 						lex.literals.push(match[0]);
 					}
-
 					lex.tokens.push(result);
 				}
-
 			}
 			return advancement;
 		} else {
 			return false;
 		}
-
 	};
 	Lexer = function () {
 		this.tokens = [];
@@ -221,7 +231,7 @@
 		};
 		this.lex = function () {
 			while (this.remaining.length > 0) {
-				this.index = this.index + (check(this, rules.space) || check(this, rules.terminator) || check(this, rules.string) || check(this, rules.number) || check(this, rules.regex) || check(this, rules.comment) || check(this, rules.identifier) || check(this, rules.logicSymbol) || check(this, rules.literalSymbol) || check(this, rules.unexpected));
+				this.index = this.index + (check(this, rules.space) || check(this, rules.terminator) || check(this, rules.explicit) || check(this, rules.string) || check(this, rules.number) || check(this, rules.regex) || check(this, rules.comment) || check(this, rules.identifier) || check(this, rules.logicSymbol) || check(this, rules.literalSymbol) || check(this, rules.unexpected));
 				this.remaining = this.input.substr(this.index);
 			}
 			return {

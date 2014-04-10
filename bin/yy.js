@@ -22,14 +22,13 @@
 				if (opts.bare === true) {
 					scope.dedentTemp();
 				}
-				out = out + writeBlock(scope, lines);
+				out += writeBlock(scope, lines);
 				variables = scope.printLocal();
 				if (variables.length > 0) {
 					variables = tab(scope) + variables + ';\n';
 				} else {
 					variables = '';
 				}
-
 				if (opts.bare === true) {
 					scope.indentTemp();
 				}
@@ -39,7 +38,6 @@
 				} else {
 					out = variables + '\n' + out.replace(/s+$/, '');
 				}
-
 				if (opts.header === true) {
 					out = '// Written by Arthur v1.0.0\n' + out;
 				}
@@ -71,38 +69,36 @@
 					} else {
 						ending = ', ';
 					}
-
 					scope.declareVar(arg.writeName(scope), true);
 					arg = arg.write(scope, defaults);
 					defaults = arg[1];
-					argString = argString + arg[0] + ending;
+					argString += arg[0] + ending;
 				}
 				out = '';
 				lines = 0;
 				increment = function () {
 					lines++;
 				};
-				out = out + writeBlock(scope, block, increment);
+				out += writeBlock(scope, block, increment);
 				variables = scope.printLocal();
 				if (variables.length > 0) {
 					variables = tab(scope) + variables + ';\n\n';
 				} else {
 					variables = '';
 				}
-
 				defaultString = '';
 				if (defaults.length > 0) {
 					for (i = _ = 0, _len2 = defaults.length; _ < _len2; i = ++_) {
-						defaultString = defaultString + tab(scope) + defaults[i][0] + '\n';
+						defaultString += tab(scope) + defaults[i][0] + '\n';
 						scope.indentTemp();
-						defaultString = defaultString + tab(scope) + defaults[i][1] + '\n';
+						defaultString += tab(scope) + defaults[i][1] + '\n';
 						scope.dedentTemp();
-						defaultString = defaultString + tab(scope) + defaults[i][2] + '\n';
+						defaultString += tab(scope) + defaults[i][2] + '\n';
 					}
-					defaultString = defaultString + '\n';
+					defaultString += '\n';
 				}
 				scope.dedent();
-				out = out + tab(scope) + '}';
+				out += tab(scope) + '}';
 				if (lines === 0) {
 					out = 'function (' + argString + ') {}';
 				}
@@ -118,7 +114,6 @@
 				} else {
 					return 'return;';
 				}
-
 			};
 		},
 		Break: function () {
@@ -144,34 +139,32 @@
 
 				out = '';
 				if (flag === 'true') {
-					out = out + 'if (' + exp.write(scope) + ' === true) {\n';
+					out += 'if (' + exp.write(scope) + ' === true) {\n';
 				} else {
-					out = out + 'if (' + exp.write(scope) + ') {\n';
+					out += 'if (' + exp.write(scope) + ') {\n';
 				}
-
 				scope.indentTemp();
-				out = out + writeBlock(scope, chunks);
+				out += writeBlock(scope, chunks);
 				scope.dedentTemp();
-				out = out + tab(scope) + '}';
+				out += tab(scope) + '}';
 				for (i = _i = 0, _len = elseIfObjs.length; _i < _len; i = ++_i) {
 					current = elseIfObjs[i];
 					if (current.flag === 'true') {
-						out = out + ' else if (' + current.exp.write(scope) + ' === true) {\n';
+						out += ' else if (' + current.exp.write(scope) + ' === true) {\n';
 					} else {
-						out = out + ' else if (' + current.exp.write(scope) + ') {\n';
+						out += ' else if (' + current.exp.write(scope) + ') {\n';
 					}
-
 					scope.indentTemp();
-					out = out + writeBlock(scope, current.chunks);
+					out += writeBlock(scope, current.chunks);
 					scope.dedentTemp();
-					out = out + tab(scope) + '}';
+					out += tab(scope) + '}';
 				}
 				if (elseObj !== false) {
-					out = out + ' else {\n';
+					out += ' else {\n';
 					scope.indentTemp();
-					out = out + writeBlock(scope, elseObj.chunks);
+					out += writeBlock(scope, elseObj.chunks);
 					scope.dedentTemp();
-					out = out + tab(scope) + '}\n';
+					out += tab(scope) + '}';
 				}
 				return out;
 			};
@@ -197,23 +190,23 @@
 
 				out = 'try {\n';
 				scope.indentTemp();
-				out = out + writeBlock(scope, chunks);
+				out += writeBlock(scope, chunks);
 				scope.dedentTemp();
-				out = out + tab(scope) + '}';
+				out += tab(scope) + '}';
 				if (catchBlock !== false) {
-					out = out + ' catch (' + catchBlock.id.write(scope) + ') {\n';
+					out += ' catch (' + catchBlock.id.write(scope) + ') {\n';
 					scope.declareVar(catchBlock.id, true);
 					scope.indentTemp();
-					out = out + writeBlock(scope, catchBlock.block);
+					out += writeBlock(scope, catchBlock.block);
 					scope.dedentTemp();
-					out = out + tab(scope) + '}';
+					out += tab(scope) + '}';
 				}
 				if (finallyBlock !== false) {
-					out = out + ' finally {\n';
+					out += ' finally {\n';
 					scope.indentTemp();
-					out = out + writeBlock(scope, finallyBlock);
+					out += writeBlock(scope, finallyBlock);
 					scope.dedentTemp();
-					out = out + tab(scope) + '}';
+					out += tab(scope) + '}';
 				}
 				return out;
 			};
@@ -242,17 +235,16 @@
 					scope.useVar(alias);
 				}
 				out = '';
-				out = out + buildIterator(iterable, identifier, scope, exports.yy);
+				out += buildIterator(iterable, identifier, scope, exports.yy);
 				scope.indentTemp();
 				if (alias !== false) {
 					if ((iterable instanceof Array)) {
-						out = out + tab(scope) + alias.write(scope) + ' = ' + identifier.write(scope) + ';\n';
+						out += tab(scope) + alias.write(scope) + ' = ' + identifier.write(scope) + ';\n';
 					} else {
-						out = out + tab(scope) + alias.write(scope) + ' = ' + iterable.write(scope) + '[' + identifier.write(scope) + '];\n';
+						out += tab(scope) + alias.write(scope) + ' = ' + iterable.write(scope) + '[' + identifier.write(scope) + '];\n';
 					}
-
 				}
-				out = out + writeBlock(scope, block);
+				out += writeBlock(scope, block);
 				scope.dedentTemp();
 				return out + tab(scope) + '}';
 			};
@@ -264,7 +256,7 @@
 
 				out = 'while (' + comparisons.write(scope) + ') {\n';
 				scope.indentTemp();
-				out = out + writeBlock(scope, block);
+				out += writeBlock(scope, block);
 				scope.dedentTemp();
 				return out + tab(scope) + '}';
 			};
@@ -280,13 +272,12 @@
 				} else {
 					out = 'switch (' + test.write(scope) + ') {\n';
 				}
-
 				scope.indentTemp();
 				for (i = _i = 0, _len = cases.length; _i < _len; i = ++_i) {
 					current = cases[i];
-					out = out + tab(scope) + 'case ' + current.test.write(scope) + ':\n';
+					out += tab(scope) + 'case ' + current.test.write(scope) + ':\n';
 					scope.indentTemp();
-					out = out + writeBlock(scope, current.chunks);
+					out += writeBlock(scope, current.chunks);
 					scope.dedentTemp();
 				}
 				scope.indentTemp();
@@ -304,7 +295,6 @@
 				} else {
 					return raw.toString();
 				}
-
 			};
 			this.accessThis = function () {
 				accessible = true;
@@ -335,7 +325,6 @@
 					}
 					out = a.write(scope) + ' ' + relation + ' ' + b.write(scope);
 				}
-
 				return out;
 			};
 		},
@@ -376,6 +365,8 @@
 					out = Number(raw).toString();
 				} else if (type === 'boolean') {
 					out = raw;
+				} else if (type === 'explicit') {
+					out = raw;
 				} else if (type === 'regex') {
 					out = String(raw);
 				}
@@ -411,13 +402,16 @@
 					} else {
 						ending = ', ';
 					}
-
-					argString = argString + arg.write(scope) + ending;
+					argString += arg.write(scope) + ending;
 				}
 				if (callback.length > 0) {
 					for (i = _ = 0, _len2 = callback.length; _ < _len2; i = ++_) {
 						func = callback[i];
-						argString = argString + ', ' + func.write(scope);
+						if (argString.length > 0) {
+							argString += ', ' + func.write(scope);
+						} else {
+							argString = func.write(scope);
+						}
 					}
 				}
 				return value.write(scope) + '(' + argString + ')';
@@ -440,14 +434,12 @@
 					} else {
 						out = '++' + a.write(scope);
 					}
-
 				} else if (relation === '--') {
 					if (b === true) {
 						out = a.write(scope) + '--';
 					} else {
 						out = '--' + a.write(scope);
 					}
-
 				} else if (relation === '?') {
 					out = '(typeof ' + a.write(scope) + ' !== \'undefined\' && ' + a.write(scope) + ' !== null)';
 				} else if (relation === 'new') {
@@ -455,7 +447,6 @@
 				} else {
 					out = a.write(scope) + ' ' + relation + ' ' + b.write(scope);
 				}
-
 				return out;
 			};
 		},
@@ -486,7 +477,6 @@
 				} else {
 					out = '[';
 				}
-
 				for (i = _i = 0, _len = elements.length; _i < _len; i = ++_i) {
 					element = elements[i];
 					if ((typeof element === 'object')) {
@@ -497,17 +487,14 @@
 							} else {
 								beginning = tab(scope);
 							}
-
 						} else {
 							if (i > 0) {
 								beginning = ', ' + tab(scope);
 							} else {
 								beginning = tab(scope);
 							}
-
 						}
-
-						out = out + beginning + element.write(scope);
+						out += beginning + element.write(scope);
 					}
 				}
 				scope.dedentTemp();
@@ -519,9 +506,7 @@
 					} else {
 						return out + ']';
 					}
-
 				}
-
 			};
 		},
 		Object: function (properties) {
@@ -539,7 +524,6 @@
 				} else {
 					out = '{';
 				}
-
 				for (i = _i = 0, _len = properties.length; _i < _len; i = ++_i) {
 					property = properties[i];
 					if ((typeof property === 'object')) {
@@ -550,17 +534,14 @@
 							} else {
 								beginning = tab(scope);
 							}
-
 						} else {
 							if (i > 0) {
 								beginning = ', ';
 							} else {
 								beginning = '';
 							}
-
 						}
-
-						out = out + beginning + property.key.write(scope) + ': ' + property.val.write(scope);
+						out += beginning + property.key.write(scope) + ': ' + property.val.write(scope);
 					}
 				}
 				scope.dedentTemp();
@@ -572,9 +553,7 @@
 					} else {
 						return out + '}';
 					}
-
 				}
-
 			};
 		}
 	};

@@ -14,20 +14,18 @@
 				for (i = _i = 0, _len = local.length; _i < _len; i = ++_i) {
 					variable = local[i];
 					if (i > 0) {
-						out = out + ', ';
+						out += ', ';
 					}
 					if ((typeof variable === 'object')) {
-						out = out + variable[0] + variable[1];
+						out += variable[0] + variable[1];
 					} else {
-						out = out + variable;
+						out += variable;
 					}
-
 				}
 				return out;
 			} else {
 				return '';
 			}
-
 		};
 		this.useVar = function (identifier) {
 			var i, variable, _i, _len;
@@ -54,7 +52,6 @@
 			} else {
 				scope[scope.length - 1].vars.push(identifier);
 			}
-
 		};
 		this.exists = function (identifier) {
 			var i, level, _i, _len;

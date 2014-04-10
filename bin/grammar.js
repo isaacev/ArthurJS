@@ -511,6 +511,10 @@
 				[
 					'Boolean',
 					'$$ = $1;'
+				],
+				[
+					'EXPLICIT',
+					'$$ = new yy.Literal("explicit", $1);'
 				]
 			],
 			Boolean: [

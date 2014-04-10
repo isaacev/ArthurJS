@@ -8,7 +8,7 @@
 		level = scope.getLevel() + scope.getTemp();
 		out = '';
 		while (0 < level) {
-			out = out + '\t';
+			out += '\t';
 			level--;
 		}
 		return out;
@@ -44,13 +44,11 @@
 						} else {
 							ending = ';\n';
 						}
-
 					} else {
 						ending = '\n';
 					}
-
 				}
-				out = out + exports.tab(scope) + str + ending;
+				out += exports.tab(scope) + str + ending;
 				if ((typeof iterator !== 'undefined' && iterator !== null)) {
 					iterator(str, ending);
 				}
@@ -74,7 +72,6 @@
 				} else {
 					break;
 				}
-
 			}
 			for (i = _ = 0, _len2 = arr.length; _ < _len2; i = ++_) {
 				arr[i] = alphabet[arr[i]];
@@ -110,15 +107,14 @@
 					comparator = '>=';
 					adjustment = '--';
 				}
-
 				i = index.write(scope);
 				j = exports.getNextIterator(scope, yy);
 				scope.useVar(j);
 				j = j.write(scope);
 				out = 'for (';
-				out = out + i + ' = ' + j + ' = ' + first.write(scope) + '; ';
-				out = out + j + ' ' + comparator + ' ' + second.write(scope) + '; ';
-				out = out + j + ' = ' + i + adjustment + ') {\n';
+				out += i + ' = ' + j + ' = ' + first.write(scope) + '; ';
+				out += j + ' ' + comparator + ' ' + second.write(scope) + '; ';
+				out += j + ' = ' + i + adjustment + ') {\n';
 			} else {
 				first = first.write(scope);
 				second = second.write(scope);
@@ -126,12 +122,11 @@
 				j = exports.getNextIterator(scope, yy);
 				scope.useVar(j);
 				j = j.write(scope);
-				out = out + 'for (';
-				out = out + i + ' = ' + j + ' = ' + first + '; ';
-				out = out + first + ' <= ' + second + ' ? ' + j + ' <= ' + second + ' : ' + j + ' >= ' + second + '; ';
-				out = out + i + ' = ' + first + ' <= ' + second + ' ? ++' + j + ' : --' + j + ') {\n';
+				out += 'for (';
+				out += i + ' = ' + j + ' = ' + first + '; ';
+				out += first + ' <= ' + second + ' ? ' + j + ' <= ' + second + ' : ' + j + ' >= ' + second + '; ';
+				out += i + ' = ' + first + ' <= ' + second + ' ? ++' + j + ' : --' + j + ') {\n';
 			}
-
 		} else {
 			i = index.write(scope);
 			j = exports.getNextIterator(scope, yy);
@@ -140,12 +135,11 @@
 			len = exports.getNextLength(scope, yy);
 			scope.useVar(len);
 			len = len.write(scope);
-			out = out + 'for (';
-			out = out + i + ' = ' + j + ' = 0, ' + len + ' = ' + series.write(scope) + '.length; ';
-			out = out + j + ' < ' + len + '; ';
-			out = out + i + ' = ++' + j + ') {\n';
+			out += 'for (';
+			out += i + ' = ' + j + ' = 0, ' + len + ' = ' + series.write(scope) + '.length; ';
+			out += j + ' < ' + len + '; ';
+			out += i + ' = ++' + j + ') {\n';
 		}
-
 		return out;
 	};
 }).call(this);
