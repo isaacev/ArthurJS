@@ -33,48 +33,48 @@ Arthur employs many of the same syntactic elements as JavaScript but with many s
 ### hello world
 
 ```
-	# define a function
-	helloWorld = def:
-		return 'Hello World!'
+# define a function
+helloWorld = def:
+	return 'Hello World!'
 
-	console.log(helloWorld())
+console.log(helloWorld())
 ```
 
 becomes:
 
 ```javascript
-	(function () {
-		var helloWorld;
+(function () {
+	var helloWorld;
 
-		helloWorld = function () {
-			return 'Hello World!';
-		};
+	helloWorld = function () {
+		return 'Hello World!';
+	};
 
-		console.log(helloWorld());
-	}());
+	console.log(helloWorld());
+}());
 ```
 
 ### objects and arrays
 
 ```
-	# inline object
-	obj = {foo = 'bar', baz = 123}
+# inline object
+obj = {foo = 'bar', baz = 123}
 
-	# inline array
-	arr = ['foo', 'bar', 'baz']
+# inline array
+arr = ['foo', 'bar', 'baz']
 
-	# block object
-	obj2 = {
-		foo = 'bar'
-		baz = 123
-	}
+# block object
+obj2 = {
+	foo = 'bar'
+	baz = 123
+}
 
-	# block array
-	arr2 = [
-		'foo'
-		'bar'
-		'baz'
-	]
+# block array
+arr2 = [
+	'foo'
+	'bar'
+	'baz'
+]
 ```
 
 ## License
