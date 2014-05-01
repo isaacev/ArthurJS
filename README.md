@@ -54,6 +54,29 @@ becomes:
 	}());
 ```
 
+### objects and arrays
+
+```
+	# inline object
+	obj = {foo = 'bar', baz = 123}
+
+	# inline array
+	arr = ['foo', 'bar', 'baz']
+
+	# block object
+	obj2 = {
+		foo = 'bar'
+		baz = 123
+	}
+
+	# block array
+	arr2 = [
+		'foo'
+		'bar'
+		'baz'
+	]
+```
+
 ## License
 
 Standard MIT license
