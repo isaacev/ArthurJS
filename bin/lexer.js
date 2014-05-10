@@ -256,6 +256,7 @@
 			literals = results.literals;
 			if (returnQuick === true) {
 				console.log(tokens);
+				console.log(literals);
 				return;
 			}
 			return this;
