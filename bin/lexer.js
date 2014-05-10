@@ -143,7 +143,7 @@
 			}
 		],
 		regex: [
-			/^\/(?:[^\/\\]|\\.)+\//,
+			/^\/(?:[^\/\\\n]|\\.)+\//,
 			function (raw) {
 				pos.col = pos.col + raw.length;
 				return 'REGEX';
