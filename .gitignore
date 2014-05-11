@@ -6,8 +6,10 @@ node_modules
 
 bin
 
-src
-
 original
 
 tmp
+
+gulpfile.js
+
+build.js
