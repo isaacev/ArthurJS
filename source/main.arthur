@@ -12,3 +12,8 @@ exports.parse = def(code, opts):
 
 	root = Parser.parse(code + '\n')
 	return root.compile(opts).trim()
+
+exports.run = def(code, opts):
+	opts = opts || {}
+	js = exports.parse(code, opts)
+	return eval(js)
