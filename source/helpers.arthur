@@ -36,14 +36,11 @@ exports.getNextIterator = def(scope, yy):
 	while (scope.exists('_' + test) == true):
 		arr = test.split('')
 		for (i in arr):
-			arr[i] = alphabet.indexOf(arr[i] + 1)
+			arr[i] = alphabet.indexOf(arr[i]) + 1
 			if (arr[i] > 25):
 				arr[i] = 0
 				if (i == 0):
 					arr.push(0)
-			else:
-				break
-		for (i in arr):
 			arr[i] = alphabet[arr[i]]
 		test = arr.join('')
 	return new yy.Id('_' + test)
@@ -52,7 +49,8 @@ exports.getNextLength = def(scope, yy):
 	num = 1
 	test = '_len'
 	while(scope.exists(test) == true):
-		test = '_len' + (num + 1)
+		num += 1
+		test = '_len' + num
 	return new yy.Id(test)
 
 exports.buildIterator = def(series, index, scope, yy):

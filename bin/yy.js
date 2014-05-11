@@ -56,7 +56,7 @@
 		Def: function (args, block) {
 			this.type = 'def';
 			this.write = function (scope) {
-				var argString, defaults, i, arg, _i, _len, ending, out, lines, increment, variables, defaultString, _, _len2;
+				var argString, defaults, i, arg, _i, _len, ending, out, lines, increment, variables, defaultString, _j, _len2;
 
 				scope.indent();
 				argString = '';
@@ -88,7 +88,7 @@
 				}
 				defaultString = '';
 				if (defaults.length > 0) {
-					for (i = _ = 0, _len2 = defaults.length; _ < _len2; i = ++_) {
+					for (i = _j = 0, _len2 = defaults.length; _j < _len2; i = ++_j) {
 						defaultString += tab(scope) + defaults[i][0] + '\n';
 						scope.indentTemp();
 						defaultString += tab(scope) + defaults[i][1] + '\n';
@@ -392,7 +392,7 @@
 			callback = [];
 			this.type = 'call';
 			this.write = function (scope) {
-				var argString, i, arg, _i, _len, ending, func, _, _len2;
+				var argString, i, arg, _i, _len, ending, func, _j, _len2;
 
 				argString = '';
 				for (i = _i = 0, _len = args.length; _i < _len; i = ++_i) {
@@ -405,7 +405,7 @@
 					argString += arg.write(scope) + ending;
 				}
 				if (callback.length > 0) {
-					for (i = _ = 0, _len2 = callback.length; _ < _len2; i = ++_) {
+					for (i = _j = 0, _len2 = callback.length; _j < _len2; i = ++_j) {
 						func = callback[i];
 						if (argString.length > 0) {
 							argString += ', ' + func.write(scope);

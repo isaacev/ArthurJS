@@ -57,23 +57,19 @@
 		return out;
 	};
 	exports.getNextIterator = function (scope, yy) {
-		var test, arr, i, _i, _len, _, _len2;
+		var test, arr, i, _i, _len;
 
 		test = 'i';
 		while (scope.exists('_' + test) === true) {
 			arr = test.split('');
 			for (i = _i = 0, _len = arr.length; _i < _len; i = ++_i) {
-				arr[i] = alphabet.indexOf(arr[i] + 1);
+				arr[i] = alphabet.indexOf(arr[i]) + 1;
 				if (arr[i] > 25) {
 					arr[i] = 0;
 					if (i === 0) {
 						arr.push(0);
 					}
-				} else {
-					break;
 				}
-			}
-			for (i = _ = 0, _len2 = arr.length; _ < _len2; i = ++_) {
 				arr[i] = alphabet[arr[i]];
 			}
 			test = arr.join('');
@@ -86,7 +82,8 @@
 		num = 1;
 		test = '_len';
 		while (scope.exists(test) === true) {
-			test = '_len' + (num + 1);
+			num += 1;
+			test = '_len' + num;
 		}
 		return new yy.Id(test);
 	};
