@@ -15,7 +15,7 @@ exports.test = function (describe) {
 
 	describe('regex', function (test) {
 		test('test', true, "/\\d+/.test('123')");
-	})
+	});
 
 	describe('string manipulation', function (test) {
 		test('concatenation', 'foobar', "'foo' + 'bar'");
@@ -35,4 +35,4 @@ exports.test = function (describe) {
 		test('inline', 'second', "obj = {first = 1, second = 'second', third = 3}\nobj.second");
 		test('block', 'uther', "obj = {\n\tking = 'arthur'\n\twizard = 'merlin'\n\tfather = 'uther'\n}\nobj.father");
 	});
-}
+};
