@@ -27,7 +27,7 @@ function run(name, args) {
 };
 
 function printDecrees() {
-	var name, str = '                                ';
+	var name, str = '                                        ';
 
 	console.log('\nKingdom file describes these decrees:');
 	for (var i in decrees) {

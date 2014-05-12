@@ -39,5 +39,7 @@ module.exports = function (basePath) {
 	}
 
 	// test basics
+	console.log('\n  tests conducted in', basePath.bold, '\n');
 	require('./tests.js').test(describe);
+	console.log('');
 };

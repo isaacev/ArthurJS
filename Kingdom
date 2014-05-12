@@ -9,13 +9,13 @@ decree('build:prod', 'replaces existing compiler files with new, heavily tested 
 	def(opts):
 		# build files to `tmp`
 		# compile all Arthur files to JavaScript and place them in the `bin` folder
-		console.log('compiling source files...')
+		console.log('\n  compiling source files...')
 		proc = Spawn('arthur', ['source', 'tmp'])
 
 		proc.on('close'):
 			def(code):
 				# build parser and--when completed--move the files from `tmp` to `bin` to be used as source files
-				console.log('building parser...')
+				console.log('  building parser...')
 				parser = new Jison(require('../tmp/grammar.js').grammar)
 				source = parser.generate()
 
@@ -24,15 +24,15 @@ decree('build:prod', 'replaces existing compiler files with new, heavily tested 
 						if (err != null):
 							throw err
 						else:
-							console.log('  saved parser')
+							console.log('    saved parser')
 
 							# movie fiels to new directory
 							Fs.readdir('./tmp/'):
 								def(err, files):
-									console.log('moving files to `bin`...')
+									console.log('  moving files to `bin`...')
 									for (i in files as file):
 										if (i == files.length - 1):
-											console.log('  files moved')
+											console.log('    files moved\n')
 
 										Fs.rename('./tmp/' + file, './bin/' + file):
 											def(err):
@@ -43,20 +43,20 @@ decree('build:prod', 'replaces existing compiler files with new, heavily tested 
 		# announce the completion of the compiling
 		proc.on('exit'):
 			def(code):
-				console.log('  compiled source files')
+				console.log('    compiled source files')
 
 
 
 decree('build:temp', 'compiles Arthur files into individual JavaScript files for testing'):
 	def(opts):
 		# compile all Arthur files to JavaScript and place them in the `bin` folder
-		console.log('compliling source files...')
+		console.log('\n  compliling source files...')
 		proc = Spawn('arthur', ['source', 'tmp'])
 
 		proc.on('close'):
 			def(code):
 				# build parser
-				console.log('building parser...')
+				console.log('  building parser...')
 				parser = new Jison(require('../tmp/grammar.js').grammar)
 				source = parser.generate()
 				Fs.writeFile('./tmp/parser.js', source):
@@ -64,11 +64,11 @@ decree('build:temp', 'compiles Arthur files into individual JavaScript files for
 						if (err != null):
 							throw err
 						else:
-							console.log('  saved parser')
+							console.log('    saved parser\n')
 
 		proc.on('exit'):
 			def(code):
-				console.log('  compiled source files')
+				console.log('    compiled source files')
 
 
 
