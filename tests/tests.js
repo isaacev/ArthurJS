@@ -3,7 +3,7 @@ exports.test = function (describe) {
 		test('add', 4, '2 + 2');
 		test('subtract', 9, '11 - 2');
 		test('multiply', 21, '7 * 3');
-		test('divide', 3, '12 / 4');
+		test('divide', 1.5, '6 / 4');
 		test('parentheses', 10, '4 + (3 * 2)');
 		test('exponent', 16, '4 ** 2');
 		test('modulo', 2, '10 % 4');
