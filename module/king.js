@@ -12,7 +12,7 @@ function decree(name, desc, func) {
 		desc: desc,
 		exec: func
 	};
-};
+}
 
 function run(name, args) {
 	if (args === undefined) {
@@ -24,7 +24,7 @@ function run(name, args) {
 	} else {
 		return 'No decree: ' + name;
 	}
-};
+}
 
 function printDecrees() {
 	var name, str = '                                        ';
