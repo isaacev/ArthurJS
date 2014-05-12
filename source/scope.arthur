@@ -31,7 +31,7 @@ exports.Scope = def:
 		# declare variable
 		.declareVar(identifier)
 
-	.declareVar = def (identifier, hidden):
+	.declareVar = def(identifier, hidden):
 		#convert identifier to string
 		if (identifier !typeof 'string'):
 			identifier = identifier.write(this)

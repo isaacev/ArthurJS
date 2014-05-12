@@ -115,7 +115,7 @@ exports.yy = {
 
 	Comment = def(raw):
 		.type = 'comment'
-		.write = def (scope):
+		.write = def(scope):
 			return '// ' + raw
 
 	If = def(flag, exp, chunks):
@@ -160,22 +160,22 @@ exports.yy = {
 
 			return out
 
-		.addElseIfs = def (elseIfs):
+		.addElseIfs = def(elseIfs):
 			elseIfObjs = elseIfs
 			return this
 
-		.addElse = def (chunks):
+		.addElse = def(chunks):
 			elseObj = {
 				chunks = chunks
 			}
 			return this
 
-	Try = def (chunks):
+	Try = def(chunks):
 		catchBlock = false
 		finallyBlock = false
 
 		.type = 'try'
-		.write = def (scope):
+		.write = def(scope):
 			out = 'try {\n'
 			scope.indentTemp()
 			out += writeBlock(scope, chunks)
@@ -199,11 +199,11 @@ exports.yy = {
 
 			return out
 
-		.addCatch = def (obj):
+		.addCatch = def(obj):
 			catchBlock = obj
 			return this
 
-		.addFinally = def (block):
+		.addFinally = def(block):
 			finallyBlock = block
 			return this
 
@@ -246,7 +246,7 @@ exports.yy = {
 
 	Switch = def(test, cases):
 		.type = 'switch'
-		.write = def (scope):
+		.write = def(scope):
 			out = ''
 			if (test == false):
 				out = 'switch (false) {\n'
@@ -365,7 +365,7 @@ exports.yy = {
 
 			return value.write(scope) + '(' + argString + ')'
 
-		.callback = def (funcs):
+		.callback = def(funcs):
 			callback = funcs
 			return this
 

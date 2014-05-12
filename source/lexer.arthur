@@ -7,14 +7,14 @@ pos = {
 rules = {
 	space = [
 		/^ +/
-		def (raw):
+		def(raw):
 			pos.col = pos.col + raw.length
 			return false
 	]
 
 	terminator = [
 		/^\n+/
-		def (raw, lex, modify, increment):
+		def(raw, lex, modify, increment):
 			pos.col = 0
 			pos.row = pos.row + raw.length
 
@@ -39,14 +39,14 @@ rules = {
 
 	comment = [
 		/^\#[^\n]*/
-		def (raw):
+		def(raw):
 			pos.col = pos.col + raw.length
 			return 'COMMENT'
 	]
 
 	identifier = [
 		/^[a-zA-Z\_\$][a-zA-Z0-9\_\$]*/
-		def (raw, lex, modify):
+		def(raw, lex, modify):
 			pos.col = pos.col + raw.length
 
 			if ((RESERVED_AR.indexOf(raw) > -1) || (RESERVED_JS.indexOf(raw) > -1)):
@@ -75,7 +75,7 @@ rules = {
 
 	logicSymbol = [
 		/^\>\=|^\<\=|^\=\=|^\!\=|^\&\&|^\|\||^\>|^\</
-		def (raw):
+		def(raw):
 			pos.col = pos.col + raw.length
 
 			return 'LOGIC'
@@ -83,7 +83,7 @@ rules = {
 
 	literalSymbol = [
 		/^\+\=|^\-\=|^\*\=|^\/\=|^\+\+|^\+|^\-\-|^\.\.|^\.|^\-|^\/|^\%|^\*\*|^\*|^\,|^\(|^\)|^\[|^\]|^\{|^\}|^\=|^\:|^\?|^\@|^\!/
-		def (raw):
+		def(raw):
 			pos.col = pos.col + raw.length
 
 			if (['+', '-', '*', '/', '%', '**'].indexOf(raw) > -1):
@@ -96,7 +96,7 @@ rules = {
 
 	string = [
 		/^\'(?:[^\'\\]|\\.)*\'/
-		def (raw, lex, modify):
+		def(raw, lex, modify):
 			pos.col = pos.col + raw.length
 
 			modify(raw.substr(1).substr(0, raw.length - 2))
@@ -105,7 +105,7 @@ rules = {
 
 	number = [
 		/^\-?[0-9]+(?:\.[0-9]+)?/
-		def (raw):
+		def(raw):
 			pos.col = pos.col + raw.length
 
 			return 'NUMBER'
@@ -122,7 +122,7 @@ rules = {
 
 	regex = [
 		/^\/(?:[^\/\\\n]|\\.)+\//
-		def (raw):
+		def(raw):
 			pos.col = pos.col + raw.length
 
 			return 'REGEX'
@@ -130,7 +130,7 @@ rules = {
 
 	unexpected = [
 		/^./
-		def (raw, lex):
+		def(raw, lex):
 			throw Error('Unexpected "' + raw + '" at line ' + (pos.row + 1) + ', column ' + (pos.col + 1))
 	]
 }
@@ -144,10 +144,10 @@ check = def(lex, rule):
 	if (match != null):
 		advancement = match[0].length
 
-		modification = def (mod):
+		modification = def(mod):
 			match[0] = mod
 
-		increment = def (inc):
+		increment = def(inc):
 			advancement += inc
 
 		result = rule[1](match[0], lex, modification, increment)
@@ -193,7 +193,7 @@ exports.lexer = def:
 	scanner = new Lexer()
 	i = -1
 
-	.setInput = def (input, returnQuick):
+	.setInput = def(input, returnQuick):
 		scanner.setInput(input)
 		results = scanner.lex()
 		tokens = results.tokens
