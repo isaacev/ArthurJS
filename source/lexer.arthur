@@ -200,9 +200,7 @@ exports.lexer = def:
 		literals = results.literals
 
 		if (returnQuick == true):
-			console.log(tokens)
-			console.log(literals)
-			return
+			return [tokens, literals]
 		return this
 
 	.lex = def:

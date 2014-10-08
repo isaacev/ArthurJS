@@ -10,6 +10,9 @@ exports.parse = def(code, opts):
 	# reset lexer each time
 	Parser.parser.lexer = new Lexer()
 
+	if (opts.tokens == true):
+		return Parser.parser.lexer.setInput(code, true)
+
 	root = Parser.parse(code + '\n')
 	return root.compile(opts).trim()
 
