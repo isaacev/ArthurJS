@@ -17,10 +17,7 @@
     "arthur": "./cli.js"
   },
   "license": "MIT",
-  "devDependencies": {
-    "gulp": "^3.8.8",
-    "gulp-jsvalidate": "^1.0.1",
-    "gulp-util": "^3.0.1",
+  "dependencies": {
     "jison": ">=0.4.13"
   }
 }
