@@ -1,6 +1,6 @@
 {
   "name": "ArthurJS",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A small language that compiles to JavaScript using NodeJS. Built using love and Jison.",
   "keywords": [
     "arthur",
