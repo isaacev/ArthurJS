@@ -15,6 +15,7 @@ Cli.option('-p --print', 'print compiled code to terminal')
 Cli.option('-b --bare', 'remove global function wrapper')
 Cli.option('-r --run', 'execute compiled JavaScript')
 Cli.option('-l --log', 'log each file compilation and flag errors')
+Cli.option('-t --tokens', 'print token-literal pairs instead of JavaScript')
 
 Cli.parse(process.argv)
 
@@ -27,6 +28,7 @@ args.print = Cli.print || false
 args.bare = Cli.bare || false
 args.run = Cli.run || false
 args.log = Cli.log || false
+args.tokens = Cli.tokens || false
 args.help = Cli.help || false
 args.version = Cli.version || false
 
@@ -78,7 +80,14 @@ walkArthurFiles = def(dir, callback):
 											callback(null, results)
 
 try:
-	if (args.repl == true):
+	if (args.tokens == true):
+		loadFile(args.src):
+			def(path, code):
+				js = Arthur.parse(code, {
+					tokens: true
+				})
+				console.log(js)
+	elseif (args.repl == true):
 		sandbox = Vm.createContext({})
 		Repl.start({
 			prompt = '-> '
