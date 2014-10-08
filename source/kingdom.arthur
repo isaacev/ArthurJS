@@ -28,7 +28,7 @@ printDecrees = def:
 
 args = process.argv.slice(2)
 
-Fs.readFile(./Kingdom', 'utf8'):
+Fs.readFile('./Kingdom', 'utf8'):
 	def(err, data):
 		if (err != null):
 			throw err
